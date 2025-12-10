@@ -6,66 +6,26 @@ import android.content.Intent
 import android.database.Cursor
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
+import android.view.inputmethod.InputMethodManager
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import org.fossify.commons.extensions.addBlockedNumber
-import org.fossify.commons.extensions.adjustAlpha
-import org.fossify.commons.extensions.beGone
-import org.fossify.commons.extensions.beGoneIf
-import org.fossify.commons.extensions.beVisible
-import org.fossify.commons.extensions.beVisibleIf
-import org.fossify.commons.extensions.checkAppSideloading
-import org.fossify.commons.extensions.checkWhatsNew
-import org.fossify.commons.extensions.copyToClipboard
-import org.fossify.commons.extensions.formatDateOrTime
-import org.fossify.commons.extensions.getMyContactsCursor
-import org.fossify.commons.extensions.getProperBackgroundColor
-import org.fossify.commons.extensions.getProperPrimaryColor
-import org.fossify.commons.extensions.getProperTextColor
-import org.fossify.commons.extensions.hideKeyboard
-import org.fossify.commons.extensions.launchActivityIntent
-import org.fossify.commons.extensions.notificationManager
-import org.fossify.commons.extensions.toast
-import org.fossify.commons.extensions.underlineText
-import org.fossify.commons.helpers.LICENSE_EVENT_BUS
-import org.fossify.commons.helpers.LICENSE_INDICATOR_FAST_SCROLL
-import org.fossify.commons.helpers.LICENSE_SMS_MMS
-import org.fossify.commons.helpers.LOWER_ALPHA
-import org.fossify.commons.helpers.MyContactsContentProvider
-import org.fossify.commons.helpers.SHORT_ANIMATION_DURATION
-import org.fossify.commons.helpers.ensureBackgroundThread
+import androidx.recyclerview.widget.LinearLayoutManager
+import org.fossify.commons.extensions.*
+import org.fossify.commons.helpers.*
 import org.fossify.commons.models.FAQItem
 import org.fossify.commons.models.Release
 import org.fossify.messages.BuildConfig
 import org.fossify.messages.R
-import org.fossify.messages.activities.ArchivedConversationsActivity
-import org.fossify.messages.activities.NewConversationActivity
-import org.fossify.messages.activities.RecycleBinConversationsActivity
-import org.fossify.messages.activities.SettingsActivity
-import org.fossify.messages.activities.SimpleActivity
-import org.fossify.messages.activities.ThreadActivity
+import org.fossify.messages.activities.*
 import org.fossify.messages.adapters.ConversationsAdapter
 import org.fossify.messages.adapters.SearchResultsAdapter
 import org.fossify.messages.databinding.FragmentMessagesBinding
-import org.fossify.messages.extensions.checkAndDeleteOldRecycleBinMessages
-import org.fossify.messages.extensions.clearAllMessagesIfNeeded
-import org.fossify.messages.extensions.clearExpiredScheduledMessages
-import org.fossify.messages.extensions.config
-import org.fossify.messages.extensions.conversationsDB
-import org.fossify.messages.extensions.deleteConversation
-import org.fossify.messages.extensions.dialNumber
-import org.fossify.messages.extensions.getConversations
-import org.fossify.messages.extensions.getMessages
-import org.fossify.messages.extensions.insertOrUpdateConversation
-import org.fossify.messages.extensions.launchConversationDetails
-import org.fossify.messages.extensions.markThreadMessagesRead
-import org.fossify.messages.extensions.markThreadMessagesUnread
-import org.fossify.messages.extensions.messagesDB
-import org.fossify.messages.extensions.renameConversation
-import org.fossify.messages.extensions.updateConversationArchivedStatus
+import org.fossify.messages.extensions.*
 import org.fossify.messages.helpers.THREAD_ID
 import org.fossify.messages.helpers.THREAD_TITLE
 import org.fossify.messages.interfaces.ConversationInteractionListener
@@ -84,7 +44,7 @@ class MessagesFragment : Fragment(), ConversationInteractionListener {
     private var storedTextColor = 0
     private var storedFontSize = 0
     private var bus: EventBus? = null
-    
+
     private var searchResultsAdapter: SearchResultsAdapter? = null
     private var searchQuery = ""
 
@@ -99,88 +59,112 @@ class MessagesFragment : Fragment(), ConversationInteractionListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        setupToolbar()
-        
+
+        // Apply system window insets to search bar only
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val layoutParams = binding.searchBarCard.layoutParams as ViewGroup.MarginLayoutParams
+            layoutParams.topMargin = systemBars.top + 8.dpToPx() // 8dp base margin + status bar height
+            binding.searchBarCard.layoutParams = layoutParams
+            insets
+        }
+
+        binding.conversationsList.layoutManager = LinearLayoutManager(requireContext())
+        binding.searchResultsList.layoutManager = LinearLayoutManager(requireContext())
+
+        setupSearch()
+
         binding.conversationsFab.setOnClickListener {
             launchNewConversation()
         }
-        
+
         binding.noConversationsPlaceholder2.setOnClickListener {
             launchNewConversation()
         }
-        
+
         bus = EventBus.getDefault()
         try {
             bus!!.register(this)
         } catch (_: Exception) {
         }
     }
-    
-    private fun setupToolbar() {
-        binding.mainToolbar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.settings -> {
-                    launchSettings()
-                    true
-                }
-                R.id.show_recycle_bin -> {
-                    launchRecycleBin()
-                    true
-                }
-                R.id.show_archived -> {
-                    launchArchivedConversations()
-                    true
-                }
-                R.id.about -> {
-                    launchAbout()
-                    true
-                }
-                else -> false
-            }
+
+    private fun Int.dpToPx(): Int = (this * resources.displayMetrics.density).toInt()
+
+    private fun setupSearch() {
+        // Make the entire search bar clickable to focus SearchView
+        binding.searchBarCard.setOnClickListener {
+            binding.searchView.requestFocus()
+            binding.searchView.isIconified = false
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(binding.searchView.findFocus(), InputMethodManager.SHOW_IMPLICIT)
         }
 
-        val searchItem = binding.mainToolbar.menu.findItem(R.id.search)
-        val searchView = searchItem.actionView as? SearchView
-        
-        searchView?.apply {
+        // Also make the search icon parent clickable if you add it back
+        // binding.searchView.setOnClickListener {
+        //     binding.searchView.requestFocus()
+        // }
+
+        // Setup SearchView
+        binding.searchView.apply {
             queryHint = getString(R.string.search)
+            maxWidth = Integer.MAX_VALUE
+
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     searchQuery = query ?: ""
                     searchMessages(searchQuery)
+                    requireActivity().hideKeyboard()
                     return true
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     searchQuery = newText ?: ""
                     searchMessages(searchQuery)
+
+                    // Show/hide appropriate views
+                    val isSearching = !newText.isNullOrEmpty()
+                    binding.searchHolder.beVisibleIf(isSearching)
+                    binding.mainHolder.beGoneIf(isSearching)
+                    binding.conversationsFab.beGoneIf(isSearching)
+
                     return true
                 }
             })
-            
-            setOnCloseListener {
-                false
-            }
         }
-        
-        searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                binding.searchHolder.beVisible()
-                binding.searchHolder.animate().alpha(1f).duration = SHORT_ANIMATION_DURATION
-                binding.conversationsFab.beGone()
-                return true
+
+        // Setup settings button
+        binding.settingsButton.setOnClickListener {
+            launchSettings()
+        }
+
+        // Setup more button with popup menu
+        binding.moreButton.setOnClickListener { view ->
+            val popupMenu = PopupMenu(requireContext(), view)
+            popupMenu.menuInflater.inflate(R.menu.menu_messages_more, popupMenu.menu)
+
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.show_recycle_bin -> {
+                        launchRecycleBin()
+                        true
+                    }
+                    R.id.show_archived -> {
+                        launchArchivedConversations()
+                        true
+                    }
+                    R.id.about -> {
+                        launchAbout()
+                        true
+                    }
+                    else -> false
+                }
             }
 
-            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                binding.searchHolder.animate().alpha(0f).duration = SHORT_ANIMATION_DURATION
-                binding.searchHolder.beGone()
-                binding.conversationsFab.beVisible()
-                return true
-            }
-        })
+            popupMenu.show()
+        }
     }
-    
+
     private fun searchMessages(text: String) {
         val minChars = 2
         if (text.length < minChars) {
@@ -197,14 +181,14 @@ class MessagesFragment : Fragment(), ConversationInteractionListener {
         ensureBackgroundThread {
             val context = context ?: return@ensureBackgroundThread
             val messages = try {
-                 context.messagesDB.getMessagesWithText("%$text%")
+                context.messagesDB.getMessagesWithText("%$text%")
             } catch (e: Exception) {
                 ArrayList()
             }
-            
+
             val searchResults = ArrayList<SearchResult>()
             val threadMap = HashMap<Long, Conversation>()
-            
+
             messages.forEach { msg ->
                 val threadId = msg.threadId
                 var conversation = threadMap[threadId]
@@ -214,23 +198,23 @@ class MessagesFragment : Fragment(), ConversationInteractionListener {
                         threadMap[threadId] = conversation
                     }
                 }
-                
+
                 if (conversation != null) {
                     val date = msg.date.formatDateOrTime(context, true, true)
                     val title = conversation.title
                     val snippet = msg.body
                     val photoUri = conversation.photoUri
-                    
+
                     searchResults.add(SearchResult(msg.id, title, snippet, date, threadId, photoUri))
                 }
             }
 
             activity?.runOnUiThread {
-                 getOrCreateSearchResultsAdapter().updateItems(searchResults, text)
+                getOrCreateSearchResultsAdapter().updateItems(searchResults, text)
             }
         }
     }
-    
+
     private fun getOrCreateSearchResultsAdapter(): SearchResultsAdapter {
         var currAdapter = searchResultsAdapter
         if (currAdapter == null) {
@@ -239,24 +223,29 @@ class MessagesFragment : Fragment(), ConversationInteractionListener {
                 searchResults = ArrayList(),
                 recyclerView = binding.searchResultsList,
                 highlightText = searchQuery
-            ) {
-                 handleSearchResultClick(it)
-            }
+            ) { handleSearchResultClick(it) }
             binding.searchResultsList.adapter = currAdapter
             searchResultsAdapter = currAdapter
+        } else if (binding.searchResultsList.adapter == null) {
+            // Reattach after tab switch / re-creation
+            binding.searchResultsList.adapter = currAdapter
         }
-        return currAdapter as SearchResultsAdapter
+        return currAdapter
     }
-    
+
     private fun handleSearchResultClick(item: Any) {
-         if (item is SearchResult) {
-             launchConversationDetails(item.threadId)
-         }
+        if (item is SearchResult) {
+            Intent(requireContext(), ThreadActivity::class.java).apply {
+                putExtra(THREAD_ID, item.threadId)
+                putExtra(THREAD_TITLE, item.title)
+                startActivity(this)
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        
+
         getOrCreateConversationsAdapter().apply {
             val properTextColor = requireContext().getProperTextColor()
             if (storedTextColor != properTextColor) {
@@ -272,17 +261,39 @@ class MessagesFragment : Fragment(), ConversationInteractionListener {
             updateDrafts()
         }
 
-        binding.searchHolder.setBackgroundColor(requireContext().getProperBackgroundColor())
-        
+        val properBackgroundColor = requireContext().getProperBackgroundColor()
+        val properTextColor = requireContext().getProperTextColor()
         val properPrimaryColor = requireContext().getProperPrimaryColor()
-        binding.mainToolbar.setBackgroundColor(properPrimaryColor)
-        
+
+        // Style the card with tinted background
+        binding.searchBarCard.setCardBackgroundColor(properPrimaryColor.adjustAlpha(0.15f))
+
+        // Color the icons
+        binding.settingsButton.setColorFilter(properTextColor)
+        binding.moreButton.setColorFilter(properTextColor)
+
+        // Apply colors to search holder
+        binding.searchHolder.setBackgroundColor(properBackgroundColor)
+
         binding.noConversationsPlaceholder2.setTextColor(properPrimaryColor)
         binding.noConversationsPlaceholder2.underlineText()
         binding.conversationsFastscroller.updateColors(properPrimaryColor)
         binding.conversationsProgressBar.setIndicatorColor(properPrimaryColor)
         binding.conversationsProgressBar.trackColor = properPrimaryColor.adjustAlpha(LOWER_ALPHA)
-        
+
+        // Ensure search adapter is always attached when we have a query
+        if (searchQuery.isNotEmpty()) {
+            binding.searchHolder.beVisible()
+            binding.mainHolder.beGone()
+            binding.conversationsFab.beGone()
+            getOrCreateSearchResultsAdapter()   // re-attaches adapter if needed
+            searchMessages(searchQuery)         // re-run current search to repopulate list
+        } else {
+            binding.searchHolder.beGone()
+            binding.mainHolder.beVisible()
+            binding.conversationsFab.beVisible()
+        }
+
         initMessenger()
     }
 
@@ -296,9 +307,9 @@ class MessagesFragment : Fragment(), ConversationInteractionListener {
         bus?.unregister(this)
         _binding = null
     }
-    
+
     override fun getContext(): Context = super.getContext() ?: requireContext()
-    
+
     override fun launchConversationDetails(threadId: Long) {
         (activity as? SimpleActivity)?.launchConversationDetails(threadId)
     }
@@ -564,37 +575,15 @@ class MessagesFragment : Fragment(), ConversationInteractionListener {
         val licenses = LICENSE_EVENT_BUS or LICENSE_SMS_MMS or LICENSE_INDICATOR_FAST_SCROLL
 
         val faqItems = arrayListOf(
-            FAQItem(
-                title = R.string.faq_2_title,
-                text = R.string.faq_2_text
-            ),
-            FAQItem(
-                title = R.string.faq_3_title,
-                text = R.string.faq_3_text
-            ),
-            FAQItem(
-                title = R.string.faq_4_title,
-                text = R.string.faq_4_text
-            ),
-            FAQItem(
-                title = org.fossify.commons.R.string.faq_9_title_commons,
-                text = org.fossify.commons.R.string.faq_9_text_commons
-            )
+            FAQItem(R.string.faq_2_title, R.string.faq_2_text),
+            FAQItem(R.string.faq_3_title, R.string.faq_3_text),
+            FAQItem(R.string.faq_4_title, R.string.faq_4_text),
+            FAQItem(org.fossify.commons.R.string.faq_9_title_commons, org.fossify.commons.R.string.faq_9_text_commons)
         )
 
         if (!resources.getBoolean(org.fossify.commons.R.bool.hide_google_relations)) {
-            faqItems.add(
-                FAQItem(
-                    title = org.fossify.commons.R.string.faq_2_title_commons,
-                    text = org.fossify.commons.R.string.faq_2_text_commons
-                )
-            )
-            faqItems.add(
-                FAQItem(
-                    title = org.fossify.commons.R.string.faq_6_title_commons,
-                    text = org.fossify.commons.R.string.faq_6_text_commons
-                )
-            )
+            faqItems.add(FAQItem(org.fossify.commons.R.string.faq_2_title_commons, org.fossify.commons.R.string.faq_2_text_commons))
+            faqItems.add(FAQItem(org.fossify.commons.R.string.faq_6_title_commons, org.fossify.commons.R.string.faq_6_text_commons))
         }
 
         (requireActivity() as? SimpleActivity)?.startAboutActivity(

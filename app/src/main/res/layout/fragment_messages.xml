@@ -1,153 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/messages_coordinator"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/main_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="@string/app_name"
-            app:menu="@menu/menu_messages" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <RelativeLayout
-        android:id="@+id/main_nested_scrollview"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:scrollbars="none"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:orientation="vertical">
 
+        <!-- Custom Search Bar Container -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/search_bar_card"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="8dp">
+
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/search_view"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:iconifiedByDefault="false"
+                    android:queryHint="@string/search"
+                    app:queryBackground="@android:color/transparent" />
+
+                <ImageView
+                    android:id="@+id/settings_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_settings_vector"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/settings" />
+
+                <ImageView
+                    android:id="@+id/more_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_more_vert_vector"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/more" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Main Content Holder -->
         <RelativeLayout
             android:id="@+id/main_holder"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.google.android.material.progressindicator.LinearProgressIndicator
-                android:id="@+id/conversations_progress_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:indeterminate="true"
-                android:visibility="gone"
-                app:hideAnimationBehavior="outward"
-                app:showAnimationBehavior="inward"
-                app:showDelay="250"
-                tools:visibility="visible" />
-
-            <org.fossify.commons.views.MyTextView
-                android:id="@+id/no_conversations_placeholder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/bigger_margin"
-                android:alpha="0.8"
-                android:gravity="center"
-                android:paddingLeft="@dimen/activity_margin"
-                android:paddingRight="@dimen/activity_margin"
-                android:text="@string/no_conversations_found"
-                android:textSize="@dimen/bigger_text_size"
-                android:textStyle="italic"
-                android:visibility="gone" />
-
-            <org.fossify.commons.views.MyTextView
-                android:id="@+id/no_conversations_placeholder_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/no_conversations_placeholder"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/ripple_all_corners"
-                android:gravity="center"
-                android:padding="@dimen/activity_margin"
-                android:text="@string/start_conversation"
-                android:textSize="@dimen/bigger_text_size"
-                android:visibility="gone" />
-
             <com.qtalk.recyclerviewfastscroller.RecyclerViewFastScroller
                 android:id="@+id/conversations_fastscroller"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
                 <org.fossify.commons.views.MyRecyclerView
                     android:id="@+id/conversations_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
-                    android:layoutAnimation="@anim/layout_animation"
-                    android:overScrollMode="ifContentScrolls"
-                    android:scrollbars="none"
-                    app:layoutManager="org.fossify.commons.views.MyLinearLayoutManager" />
+                    android:paddingBottom="56dp" />
 
             </com.qtalk.recyclerviewfastscroller.RecyclerViewFastScroller>
+
+            <TextView
+                android:id="@+id/no_conversations_placeholder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/no_conversations_found"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/no_conversations_placeholder_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/no_conversations_placeholder"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                android:text="@string/start_conversation"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/conversations_progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:indeterminate="true"
+                android:visibility="gone" />
+
         </RelativeLayout>
 
+        <!-- Search Results Holder -->
         <RelativeLayout
             android:id="@+id/search_holder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:alpha="0"
-            android:visibility="gone"
-            android:background="?android:attr/windowBackground">
-
-            <org.fossify.commons.views.MyTextView
-                android:id="@+id/search_placeholder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/activity_margin"
-                android:alpha="0.8"
-                android:gravity="center"
-                android:paddingStart="@dimen/activity_margin"
-                android:paddingEnd="@dimen/activity_margin"
-                android:text="@string/no_items_found"
-                android:textSize="@dimen/bigger_text_size"
-                android:textStyle="italic" />
-
-            <org.fossify.commons.views.MyTextView
-                android:id="@+id/search_placeholder_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/search_placeholder"
-                android:layout_centerHorizontal="true"
-                android:alpha="0.8"
-                android:gravity="center"
-                android:paddingStart="@dimen/activity_margin"
-                android:paddingTop="@dimen/medium_margin"
-                android:paddingEnd="@dimen/activity_margin"
-                android:paddingBottom="@dimen/medium_margin"
-                android:text="@string/type_2_characters"
-                android:textSize="@dimen/bigger_text_size"
-                android:textStyle="italic" />
+            android:visibility="gone">
 
             <org.fossify.commons.views.MyRecyclerView
                 android:id="@+id/search_results_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:scrollbars="vertical"
-                app:layoutManager="org.fossify.commons.views.MyLinearLayoutManager" />
+                android:clipToPadding="false" />
+
+            <TextView
+                android:id="@+id/search_placeholder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/search"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/search_placeholder_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/search_placeholder"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                android:text="@string/type_2_chars_at_least"
+                android:textSize="14sp" />
 
         </RelativeLayout>
-    </RelativeLayout>
 
-    <org.fossify.commons.views.MyFloatingActionButton
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/conversations_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/activity_margin"
-        android:src="@drawable/ic_plus_vector" />
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_plus_vector"
+        app:useCompatPadding="true" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

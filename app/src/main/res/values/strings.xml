@@ -21,6 +21,8 @@
     <string name="forward_message">Forward</string>
     <string name="compress_error">Unable to compress image to selected size</string>
     <string name="search">Search</string>
+    <string name="more">More</string>
+    <string name="type_2_chars_at_least">Type at least 2 characters</string>
     <!-- Attachments -->
     <string name="duplicate_item_warning">Duplicate item was not included</string>
     <!-- vCard -->
