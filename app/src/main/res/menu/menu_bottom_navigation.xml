@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/messagesFragment"
+        android:icon="@drawable/ic_message_vector"
+        android:title="Messages" />
+
+    <item
+        android:id="@+id/shieldFragment"
+        android:icon="@drawable/ic_shield_vector"
+        android:title="Shield" />
+
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/ic_settings_vector"
+        android:title="Settings" />
+        
+    <item
+        android:id="@+id/statsFragment"
+        android:icon="@drawable/ic_chart_vector"
+        android:title="Stats" />
+</menu>
