@@ -162,10 +162,13 @@ dependencies {
     implementation(libs.bundles.room)
     ksp(libs.androidx.room.compiler)
     detektPlugins(libs.compose.detekt)
-    
+
     // PhishEye
-    implementation(libs.onnxruntime)
+    implementation(platform(libs.djl.bom))
+    implementation(libs.djl.api)
     implementation(libs.tokenizers)
+    implementation(libs.tokenizers.android)
+    implementation(libs.onnxruntime)
     implementation(libs.okhttp)
     implementation(libs.material)
 }
