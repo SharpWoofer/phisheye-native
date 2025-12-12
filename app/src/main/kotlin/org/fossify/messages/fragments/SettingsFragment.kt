@@ -2,6 +2,8 @@ package org.fossify.messages.fragments
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.LayoutInflater
@@ -131,6 +133,19 @@ class SettingsFragment : Fragment() {
         binding.settingsUpdateBlacklistBtn.setOnClickListener {
             // Placeholder for blacklist update logic
             Toast.makeText(context, "Blacklist update not implemented yet", Toast.LENGTH_SHORT).show()
+        }
+
+        // Help UI
+        binding.settingsCallHelplineCard.setOnClickListener {
+            val intent = Intent(Intent.ACTION_DIAL)
+            intent.data = Uri.parse("tel:1799")
+            startActivity(intent)
+        }
+
+        binding.settingsFileReportCard.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse("https://eservices1.police.gov.sg/phub/eservices/landingpage/police-report")
+            startActivity(intent)
         }
     }
 

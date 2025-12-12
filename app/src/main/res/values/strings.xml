@@ -167,6 +167,7 @@
     <string name="filtering_info_note">As always, messages and calls from your contacts will not be screened.</string>
     <string name="cancel">Cancel</string>
     <string name="enable">Enable</string>
+    <string name="stir_shaken_unsupported">STIR/SHAKEN verification is not fully supported by telcos in Singapore yet.</string>
 
     <!-- Call Screening -->
     <string name="calls_settings">Calls</string>
@@ -174,6 +175,11 @@
     <string name="block_international_calls">Block international calls</string>
     <string name="block_blacklisted_numbers">Block numbers from authorities &amp; community reports</string>
     <string name="update_blacklist">Update blacklist</string>
+
+    <!-- Help -->
+    <string name="help">Help</string>
+    <string name="call_anti_scam_helpline">Call the anti-scam helpline</string>
+    <string name="file_police_report">File a police report</string>
 
     <!--
         Haven\'t found some strings? There\'s more at
