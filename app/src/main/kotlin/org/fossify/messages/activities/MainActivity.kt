@@ -28,6 +28,7 @@ import org.fossify.messages.BuildConfig
 import org.fossify.messages.R
 import org.fossify.messages.databinding.ActivityMainBinding
 import org.fossify.messages.fragments.MessagesFragment
+import org.fossify.messages.fragments.ScanFragment
 import org.fossify.messages.fragments.SettingsFragment
 import org.fossify.messages.fragments.ShieldFragment
 import org.fossify.messages.phisheye.ModelUpdater
@@ -80,7 +81,7 @@ class MainActivity : SimpleActivity() {
             val (tag, fragmentClass) = when (item.itemId) {
                 R.id.messagesFragment -> "messages_tag" to MessagesFragment::class.java
                 R.id.shieldFragment -> "shield_tag" to ShieldFragment::class.java
-                R.id.statsFragment -> "stats_tag" to Fragment::class.java // Placeholder
+                R.id.statsFragment -> "stats_tag" to ScanFragment::class.java
                 R.id.settingsFragment -> "settings_tag" to SettingsFragment::class.java
                 else -> throw IllegalStateException("Unknown navigation item: ${item.title}")
             }

@@ -38,6 +38,7 @@ onnxruntime = "1.23.2"
 okhttp = "5.3.2"
 material = "1.13.0"
 tokenizer-android = "0.33.0"
+mlkit-text-recognition = "16.0.1"
 [libraries]
 #AndroidX
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment" }
@@ -70,6 +71,8 @@ tokenizers-android = { module = "ai.djl.android:tokenizer-native", version.ref =
 onnxruntime = { module = "com.microsoft.onnxruntime:onnxruntime-android", version.ref = "onnxruntime" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
+mlkit-text-recognition = { module = "com.google.mlkit:text-recognition", version.ref = "mlkit-text-recognition" }
+mlkit-text-recognition-chinese = { module = "com.google.mlkit:text-recognition-chinese", version.ref = "mlkit-text-recognition" }
 [bundles]
 room = [
     "androidx-room-ktx",

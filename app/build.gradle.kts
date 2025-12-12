@@ -172,4 +172,8 @@ dependencies {
     implementation(libs.onnxruntime)
     implementation(libs.okhttp)
     implementation(libs.material)
+
+    // OCR
+    implementation(libs.mlkit.text.recognition)
+    // implementation(libs.mlkit.text.recognition.chinese)
 }
