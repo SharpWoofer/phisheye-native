@@ -24,19 +24,14 @@ import kotlinx.coroutines.withContext
 import org.fossify.messages.BuildConfig
 import org.fossify.messages.R
 import org.fossify.messages.activities.MainActivity
+import android.provider.ContactsContract
 import java.util.concurrent.ConcurrentHashMap
+import org.fossify.commons.extensions.getMyContactsCursor
 
 class NotificationListener : NotificationListenerService() {
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    private val spamDetector by lazy { SpamDetector(this) }
-    private val groqVerifier by lazy { GroqSpamVerifier(BuildConfig.GROQ_API_KEY) }
-    private val detectionHistoryRepository by lazy {
-        DetectionHistoryRepository.getInstance(this)
-    }
-
-    private val hasGroqApiKey: Boolean
-        get() = BuildConfig.GROQ_API_KEY.isNotBlank()
+    private val spamHandler by lazy { SpamHandler(this) }
 
     override fun onListenerConnected() {
         super.onListenerConnected()
@@ -92,10 +87,14 @@ class NotificationListener : NotificationListenerService() {
         val info = NotificationInfo(sourcePackage, appLabel, safeTitle, trimmedText)
         serviceScope.launch {
             try {
-                val analyzed = analyzeNotification(info)
+                if (isContact(safeTitle)) {
+                    Log.d(TAG, "Skipping AI for trusted contact: $safeTitle")
+                    return@launch
+                }
+                val analyzed = spamHandler.analyzeContent(info)
                 NotificationDataHolder.onNewNotification(analyzed)
                 if (analyzed.prediction.equals("SPAM", ignoreCase = true)) {
-                    showSpamAlertNotification(analyzed)
+                    spamHandler.showSpamAlertNotification(analyzed)
                 }
             } catch (ex: Exception) {
                 Log.e(TAG, "Failed to analyze notification: ${ex.message}", ex)
@@ -103,122 +102,27 @@ class NotificationListener : NotificationListenerService() {
         }
     }
 
-    private suspend fun analyzeNotification(info: NotificationInfo): AnalyzedNotification {
-        val (localLabel, localConfidence) = try {
-            withContext(Dispatchers.Default) {
-                spamDetector.predict(info.text)
-            }
-        } catch (ex: Exception) {
-            Log.e(TAG, "Local spam detection failed: ${ex.message}", ex)
-            // Fallback to simple heuristic if model fails
-            Pair("HAM", 0.5f)
-        }
-
-        var finalLabel = localLabel
-        var finalConfidence = localConfidence
-        var analysisSource = "local"
-        var reason: String? = null
-
-        val shouldQueryRemote = hasGroqApiKey &&
-                (localLabel.equals("ERROR", ignoreCase = true) || localConfidence < SECONDARY_CONFIDENCE_THRESHOLD)
-
-        if (shouldQueryRemote) {
-            val remoteResult = withContext(Dispatchers.IO) {
-                groqVerifier.verify(info)
-            }
-            if (remoteResult != null) {
-                finalLabel = remoteResult.label
-                finalConfidence = remoteResult.confidence
-                analysisSource = "remote"
-                reason = remoteResult.reason
-            }
-        }
-
-        val analyzed = AnalyzedNotification(
-            info = info,
-            prediction = finalLabel,
-            confidence = finalConfidence,
-            analysisSource = analysisSource,
-            reason = reason
-        )
-
+    private fun isContact(name: String): Boolean {
+        if (name.isBlank()) return false
+        val cursor = getMyContactsCursor(favoritesOnly = false, withPhoneNumbersOnly = false)
         try {
-            detectionHistoryRepository.logDetection(analyzed)
-        } catch (ex: Exception) {
-            Log.w(TAG, "Failed to persist detection history: ${ex.message}", ex)
-        }
-
-        return analyzed
-    }
-
-
-    private fun showSpamAlertNotification(result: AnalyzedNotification) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val permissionGranted = ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-            if (!permissionGranted) {
-                Log.w(TAG, "POST_NOTIFICATIONS permission missing; skipping spam alert.")
-                return
+            if (cursor?.moveToFirst() == true) {
+                val nameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
+                if (nameIndex != -1) {
+                    do {
+                        val contactName = cursor.getString(nameIndex)
+                        if (name.equals(contactName, ignoreCase = true)) {
+                            return true
+                        }
+                    } while (cursor.moveToNext())
+                }
             }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error checking contacts", e)
+        } finally {
+            cursor?.close()
         }
-
-        val notificationManager = NotificationManagerCompat.from(this)
-        if (!notificationManager.areNotificationsEnabled()) {
-            Log.w(TAG, "Notifications are disabled for PhishEye; spam alert suppressed.")
-            return
-        }
-
-        ensureSpamAlertChannel()
-
-        val notificationId = spamNotificationCounter.incrementAndGet()
-        val appName = result.info.appName.ifBlank { result.info.packageName }
-        val previewText = result.info.title.takeIf { it.isNotBlank() } ?: result.info.text
-        val alertTitle = "⚠️ Likely Spam Detected from $appName"
-
-        val launchIntent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            notificationId,
-            launchIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val notification = NotificationCompat.Builder(this, SPAM_ALERT_CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.stat_sys_warning)
-            .setContentTitle(alertTitle)
-            .setContentText(previewText)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(result.info.text))
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setCategory(NotificationCompat.CATEGORY_SYSTEM)
-            .setAutoCancel(true)
-            .setContentIntent(pendingIntent)
-            .build()
-
-        try {
-            notificationManager.notify(notificationId, notification)
-        } catch (ex: SecurityException) {
-            Log.e(TAG, "Unable to post spam alert notification: ${ex.message}", ex)
-        }
-    }
-
-    private fun ensureSpamAlertChannel() {
-        val manager = getSystemService(NotificationManager::class.java) ?: return
-        val channel = manager.getNotificationChannel(SPAM_ALERT_CHANNEL_ID)
-        if (channel == null) {
-            val spamChannel = NotificationChannel(
-                SPAM_ALERT_CHANNEL_ID,
-                SPAM_ALERT_CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                description = SPAM_ALERT_CHANNEL_DESCRIPTION
-                enableVibration(true)
-            }
-            manager.createNotificationChannel(spamChannel)
-        }
+        return false
     }
 
     private fun resolveAppLabel(packageName: String): String {
@@ -242,12 +146,6 @@ class NotificationListener : NotificationListenerService() {
     companion object {
         private const val TAG = "NotificationListener"
         private val appLabelCache = ConcurrentHashMap<String, String>()
-        private const val SPAM_ALERT_CHANNEL_ID = "phisheye_spam_alerts"
-        private const val SPAM_ALERT_CHANNEL_NAME = "Spam Alerts"
-        private const val SPAM_ALERT_CHANNEL_DESCRIPTION =
-            "Warnings generated when PhishEye detects likely spam."
-        private const val SECONDARY_CONFIDENCE_THRESHOLD = 0.75f
-        private val spamNotificationCounter = java.util.concurrent.atomic.AtomicInteger(2000)
         @Volatile
         private var isServiceConnected: Boolean = false
 

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.provider.Telephony
+import kotlinx.coroutines.runBlocking
 import org.fossify.commons.extensions.baseConfig
 import org.fossify.commons.extensions.getMyContactsCursor
 import org.fossify.commons.extensions.isNumberBlocked
@@ -86,6 +87,39 @@ class SmsReceiver : BroadcastReceiver() {
             if (!context.isNumberBlocked(address)) {
                 val privateCursor = context.getMyContactsCursor(favoritesOnly = false, withPhoneNumbersOnly = true)
                 ensureBackgroundThread {
+                    try {
+                        val senderNameForSpam = context.getNameFromAddress(address, privateCursor)
+                        var shouldCheck = false
+                        if (address.equals("Likely-SCAM", ignoreCase = true)) {
+                            shouldCheck = true
+                        } else {
+                            val hasLetters = address.any { it.isLetter() }
+                            if (hasLetters) {
+                                shouldCheck = false
+                            } else {
+                                if (senderNameForSpam != address) {
+                                    shouldCheck = false
+                                } else {
+                                    shouldCheck = true
+                                }
+                            }
+                        }
+
+                        if (shouldCheck) {
+                            val handler = org.fossify.messages.phisheye.SpamHandler(context)
+                            val info = org.fossify.messages.phisheye.NotificationInfo("com.android.mms", "SMS", address, body)
+                            runBlocking {
+                                val result = handler.analyzeContent(info)
+                                org.fossify.messages.phisheye.NotificationDataHolder.onNewNotification(result)
+                                if (result.prediction == "SPAM") {
+                                    handler.showSpamAlertNotification(result)
+                                }
+                            }
+                        }
+                    } catch (e: Exception) {
+                        android.util.Log.e("SmsReceiver", "Spam check failed", e)
+                    }
+
                     val newMessageId = context.insertNewSMS(address, subject, body, date, read, threadId, type, subscriptionId)
 
                     val conversation = context.getConversations(threadId).firstOrNull() ?: return@ensureBackgroundThread
