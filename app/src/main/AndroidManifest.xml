@@ -185,6 +185,15 @@
             android:foregroundServiceType="dataSync" />
 
         <service
+            android:name=".phisheye.SpamCallScreeningService"
+            android:exported="true"
+            android:permission="android.permission.BIND_SCREENING_SERVICE">
+            <intent-filter>
+                <action android:name="android.telecom.CallScreeningService" />
+            </intent-filter>
+        </service>
+
+        <service
             android:name=".phisheye.NotificationListener"
             android:exported="false"
             android:label="@string/service_name"

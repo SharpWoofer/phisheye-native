@@ -114,6 +114,24 @@ class SettingsFragment : Fragment() {
         binding.settingsFilterTelegram.setOnCheckedChangeListener { _, isChecked ->
             savePreference(PREF_FILTER_TELEGRAM, isChecked)
         }
+
+        // Calls UI
+        binding.settingsBlockSpoofed.setOnCheckedChangeListener { _, isChecked ->
+            savePreference(PREF_BLOCK_SPOOFED, isChecked)
+        }
+
+        binding.settingsBlockInternational.setOnCheckedChangeListener { _, isChecked ->
+            savePreference(PREF_BLOCK_INTERNATIONAL, isChecked)
+        }
+
+        binding.settingsBlockBlacklisted.setOnCheckedChangeListener { _, isChecked ->
+            savePreference(PREF_BLOCK_BLACKLISTED, isChecked)
+        }
+
+        binding.settingsUpdateBlacklistBtn.setOnClickListener {
+            // Placeholder for blacklist update logic
+            Toast.makeText(context, "Blacklist update not implemented yet", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun loadPreferences() {
@@ -126,6 +144,10 @@ class SettingsFragment : Fragment() {
         val autoUpdate = prefs.getBoolean(PREF_AUTO_UPDATE_MODELS, false)
         val forceLocal = prefs.getBoolean(PREF_FORCE_LOCAL_MODEL, false)
 
+        val blockSpoofed = prefs.getBoolean(PREF_BLOCK_SPOOFED, true)
+        val blockInternational = prefs.getBoolean(PREF_BLOCK_INTERNATIONAL, true)
+        val blockBlacklisted = prefs.getBoolean(PREF_BLOCK_BLACKLISTED, true)
+
         binding.settingsFilterAppsSwitch.isChecked = filterOtherApps
         binding.settingsAppsListContainer.visibility = if (filterOtherApps) View.VISIBLE else View.GONE
         
@@ -134,6 +156,13 @@ class SettingsFragment : Fragment() {
 
         binding.settingsAutoUpdateSwitch.isChecked = autoUpdate
         binding.settingsForceLocalSwitch.isChecked = forceLocal
+
+        // STIR/SHAKEN not supported in SG yet
+        binding.settingsBlockSpoofed.isChecked = false
+        binding.settingsBlockSpoofed.isEnabled = false
+        
+        binding.settingsBlockInternational.isChecked = blockInternational
+        binding.settingsBlockBlacklisted.isChecked = blockBlacklisted
     }
 
     private fun savePreference(key: String, value: Boolean) {
@@ -235,5 +264,8 @@ class SettingsFragment : Fragment() {
         const val PREF_FILTER_TELEGRAM = "filter_telegram"
         const val PREF_AUTO_UPDATE_MODELS = "auto_update_models"
         const val PREF_FORCE_LOCAL_MODEL = "force_local_model"
+        const val PREF_BLOCK_SPOOFED = "block_spoofed_numbers"
+        const val PREF_BLOCK_INTERNATIONAL = "block_international_calls"
+        const val PREF_BLOCK_BLACKLISTED = "block_blacklisted_numbers"
     }
 }
