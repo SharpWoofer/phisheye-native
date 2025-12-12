@@ -11,6 +11,7 @@ import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 @Entity(tableName = "detection_history")
@@ -33,7 +34,7 @@ interface DetectionHistoryDao {
     suspend fun insert(entity: DetectionHistoryEntity)
 
     @Query("SELECT * FROM detection_history ORDER BY timestamp DESC")
-    suspend fun getAll(): List<DetectionHistoryEntity>
+    fun getAll(): Flow<List<DetectionHistoryEntity>>
 
     @Query("SELECT * FROM detection_history ORDER BY timestamp DESC LIMIT :maxRows")
     suspend fun getRecent(maxRows: Int): List<DetectionHistoryEntity>
@@ -96,14 +97,7 @@ class DetectionHistoryRepository private constructor(
         dao.trimToSize(MAX_ROWS)
     }
 
-    suspend fun getDetectionHistory(limit: Int? = null): List<DetectionHistoryEntity> =
-        withContext(Dispatchers.IO) {
-            when {
-                limit == null -> dao.getAll()
-                limit <= 0 -> emptyList()
-                else -> dao.getRecent(limit)
-            }
-        }
+    fun getDetectionHistory(): Flow<List<DetectionHistoryEntity>> = dao.getAll()
 
     suspend fun getDetectionCount(): Int =
         withContext(Dispatchers.IO) { dao.count() }

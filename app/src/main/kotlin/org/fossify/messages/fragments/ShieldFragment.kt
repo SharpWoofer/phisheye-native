@@ -13,7 +13,11 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.launch
 import org.fossify.messages.R
 import org.fossify.messages.adapters.ShieldAdapter
 import org.fossify.messages.databinding.FragmentShieldBinding
@@ -33,20 +37,11 @@ class ShieldFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         setupInsets()
         setupRecyclerView()
         setupTabs()
         setupObservers()
-        
-        // Initial Load
-        viewModel.loadData()
-    }
-    
-    override fun onResume() {
-        super.onResume()
-        // Refresh status when returning (e.g. from settings)
-        viewModel.loadData()
     }
 
     private fun setupInsets() {
@@ -78,7 +73,7 @@ class ShieldFragment : Fragment() {
                 }
             }
         }
-        
+
         binding?.shieldRecyclerView?.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@ShieldFragment.adapter
@@ -95,16 +90,20 @@ class ShieldFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.uiState.observe(viewLifecycleOwner) { state ->
-            renderStatus(state.isProtected)
-            renderTabs(state.filter)
-            adapter.submitList(state.items)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    renderStatus(state.isProtected)
+                    renderTabs(state.filter)
+                    adapter.submitList(state.items)
+                }
+            }
         }
     }
 
     private fun renderStatus(isProtected: Boolean) {
         val statusBinding = binding?.layoutStatus ?: return
-        
+
         if (isProtected) {
             statusBinding.statusContainer.setBackgroundColor(Color.parseColor("#E8F5E9")) // Light Green
             statusBinding.statusTitle.text = "Protected"
@@ -140,7 +139,7 @@ class ShieldFragment : Fragment() {
             view.setTextColor(Color.WHITE)
         } else {
             view.setBackgroundResource(R.drawable.bg_tab_unselected)
-            view.setTextColor(Color.GRAY) 
+            view.setTextColor(Color.GRAY)
         }
     }
 

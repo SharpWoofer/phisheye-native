@@ -1,74 +1,34 @@
 package org.fossify.messages.viewmodels
 
 import android.app.Application
-import android.content.ComponentName
-import android.provider.Settings
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.fossify.messages.models.ShieldFilter
 import org.fossify.messages.models.ShieldListItem
 import org.fossify.messages.models.ShieldUiState
-import org.fossify.messages.phisheye.DetectionHistoryRepository
 import org.fossify.messages.phisheye.DetectionHistoryEntity
+import org.fossify.messages.phisheye.DetectionHistoryRepository
+import org.fossify.messages.phisheye.NotificationDataHolder
 
 class ShieldViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = DetectionHistoryRepository.getInstance(application)
-    private val _uiState = MutableLiveData(ShieldUiState())
-    val uiState: LiveData<ShieldUiState> = _uiState
 
-    // Cache the full list to avoid re-fetching on filter change
-    private var allDetections: List<DetectionHistoryEntity> = emptyList()
+    private val _filter = MutableStateFlow(ShieldFilter.ALL)
 
-    fun loadData() {
-        viewModelScope.launch {
-            checkProtectionStatus()
-            allDetections = repository.getDetectionHistory()
-            applyFilter()
-        }
-    }
-
-    fun setFilter(filter: ShieldFilter) {
-        _uiState.value = _uiState.value?.copy(filter = filter)
-        applyFilter()
-    }
-
-    fun deleteItem(id: Long) {
-        viewModelScope.launch {
-            repository.deleteEntry(id)
-            loadData() // Reload the list to reflect deletion
-        }
-    }
-
-    fun moveToInbox(item: ShieldListItem.SmsItem) {
-        viewModelScope.launch {
-            // For now, "Moving to Inbox" means removing it from the spam log (Shield list)
-            // and potentially whitelisting the sender if we had a blocked numbers repository.
-            // Since this app uses a shared config for blocked keywords/numbers, we could check that.
-            // But fundamentally, removing it from the detection history "clears" it.
-            
-            // 1. Remove from history
-            repository.deleteEntry(item.id)
-            
-            // 2. Ideally, if we marked it as spam in the SMS database, we would unmark it here.
-            // However, the current PhishEye implementation primarily logs detections.
-            // If the user wants to keep it, it stays in their SMS app.
-            // Removing it from here signals "This is not spam, I dealt with it".
-            
-            loadData() // Reload the list
-        }
-    }
-
-    private fun applyFilter() {
-        val currentFilter = _uiState.value?.filter ?: ShieldFilter.ALL
-        
-        // strict filter: only show SPAM items
+    val uiState = combine(
+        repository.getDetectionHistory(),
+        _filter,
+        NotificationDataHolder.serviceActive.asFlow()
+    ) { allDetections, currentFilter, isProtected ->
         val spamOnly = allDetections.filter { it.prediction.equals("SPAM", ignoreCase = true) }
-        
+
         val filtered = when (currentFilter) {
             ShieldFilter.ALL -> spamOnly
             ShieldFilter.SMS -> spamOnly.filter { isSms(it.packageName) }
@@ -82,23 +42,41 @@ class ShieldViewModel(application: Application) : AndroidViewModel(application) 
             filtered.map { mapToUiModel(it) }
         }
 
-        _uiState.value = _uiState.value?.copy(items = mappedItems)
+        ShieldUiState(
+            isProtected = isProtected,
+            filter = currentFilter,
+            items = mappedItems
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = ShieldUiState()
+    )
+
+    fun setFilter(filter: ShieldFilter) {
+        _filter.value = filter
     }
 
-    private fun checkProtectionStatus() {
-        // Use the real service status from NotificationListener
-        val isServiceRunning = org.fossify.messages.phisheye.NotificationListener.isServiceConnected()
-        _uiState.value = _uiState.value?.copy(isProtected = isServiceRunning)
+    fun deleteItem(id: Long) {
+        viewModelScope.launch {
+            repository.deleteEntry(id)
+        }
     }
-    
+
+    fun moveToInbox(item: ShieldListItem.SmsItem) {
+        viewModelScope.launch {
+            repository.deleteEntry(item.id)
+        }
+    }
+
     private fun mapToUiModel(entity: DetectionHistoryEntity): ShieldListItem {
         return when {
             isCall(entity.packageName) -> ShieldListItem.CallItem(
                 id = entity.id,
                 timestamp = entity.timestamp,
-                number = entity.title, 
+                number = entity.title,
                 reason = entity.reason,
-                duration = null, 
+                duration = null,
                 entity = entity
             )
             isSms(entity.packageName) -> ShieldListItem.SmsItem(

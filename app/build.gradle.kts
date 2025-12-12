@@ -157,6 +157,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.documentfile)
     implementation(libs.androidx.lifecycle.process)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.ez.vcard)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.bundles.room)

@@ -31,14 +31,7 @@ import org.fossify.messages.phisheye.SpamScannerForegroundService
 
 class MainActivity : SimpleActivity() {
     private val MAKE_DEFAULT_APP_REQUEST = 1
-
     private val binding by viewBinding(ActivityMainBinding::inflate)
-
-    // Fragments
-    private val messagesFragment by lazy { MessagesFragment() }
-    private val shieldFragment by lazy { ShieldFragment() }
-    private val placeholderFragment3 by lazy { Fragment() } // Simple placeholder
-    private val placeholderFragment4 by lazy { Fragment() } // Simple placeholder
 
     @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,9 +48,9 @@ class MainActivity : SimpleActivity() {
 
         setupBottomNavigation()
 
-        // Load default fragment
+        // Load default fragment only on initial creation
         if (savedInstanceState == null) {
-            loadFragment(messagesFragment)
+            binding.bottomNavigation.selectedItemId = R.id.messagesFragment
         }
 
         checkDefaultAppAndPermissions()
@@ -66,32 +59,33 @@ class MainActivity : SimpleActivity() {
 
     private fun setupBottomNavigation() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.messagesFragment -> {
-                    loadFragment(messagesFragment)
-                    true
-                }
-                R.id.shieldFragment -> {
-                    loadFragment(shieldFragment)
-                    true
-                }
-                R.id.settingsFragment -> {
-                    loadFragment(placeholderFragment3)
-                    true
-                }
-                R.id.statsFragment -> {
-                    loadFragment(placeholderFragment4)
-                    true
-                }
-                else -> false
+            val transaction = supportFragmentManager.beginTransaction()
+            val currentFragment = supportFragmentManager.primaryNavigationFragment
+            if (currentFragment != null) {
+                transaction.hide(currentFragment)
             }
-        }
-    }
 
-    private fun loadFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.main_fragment_container, fragment)
-            .commit()
+            val (tag, fragmentClass) = when (item.itemId) {
+                R.id.messagesFragment -> "messages_tag" to MessagesFragment::class.java
+                R.id.shieldFragment -> "shield_tag" to ShieldFragment::class.java
+                R.id.settingsFragment -> "settings_tag" to Fragment::class.java // Placeholder
+                R.id.statsFragment -> "stats_tag" to Fragment::class.java // Placeholder
+                else -> throw IllegalStateException("Unknown navigation item: ${item.title}")
+            }
+
+            var targetFragment = supportFragmentManager.findFragmentByTag(tag)
+            if (targetFragment == null) {
+                targetFragment = fragmentClass.newInstance()
+                transaction.add(R.id.main_fragment_container, targetFragment, tag)
+            } else {
+                transaction.show(targetFragment)
+            }
+
+            transaction.setPrimaryNavigationFragment(targetFragment)
+            transaction.setReorderingAllowed(true)
+            transaction.commit()
+            true
+        }
     }
 
     override fun onResume() {
@@ -135,13 +129,13 @@ class MainActivity : SimpleActivity() {
     }
 
     private fun askPermissions() {
-        handlePermission(PERMISSION_READ_SMS) {
-            if (it) {
-                handlePermission(PERMISSION_SEND_SMS) {
-                    if (it) {
-                        handlePermission(PERMISSION_READ_CONTACTS) {
-                            handleNotificationPermission { granted ->
-                                if (!granted) {
+        handlePermission(PERMISSION_READ_SMS) { readSmsGranted ->
+            if (readSmsGranted) {
+                handlePermission(PERMISSION_SEND_SMS) { sendSmsGranted ->
+                    if (sendSmsGranted) {
+                        handlePermission(PERMISSION_READ_CONTACTS) { _ ->
+                            handleNotificationPermission { notifGranted ->
+                                if (!notifGranted) {
                                     PermissionRequiredDialog(
                                         activity = this,
                                         textId = org.fossify.commons.R.string.allow_notifications_incoming_messages,
