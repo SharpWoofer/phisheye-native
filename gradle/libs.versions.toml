@@ -8,7 +8,7 @@ ksp = "2.3.3"
 detekt = "1.23.8"
 detektCompose = "0.4.28"
 #AndroidX
-androidx-fragment = "1.7.1"
+androidx-fragment = "1.8.9"
 androidx-constraintlayout = "2.2.1"
 androidx-swiperefreshlayout = "1.1.0"
 androidx-lifecycleprocess = "2.10.0"
