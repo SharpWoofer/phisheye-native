@@ -11,12 +11,12 @@
         android:title="Shield" />
 
     <item
-        android:id="@+id/settingsFragment"
-        android:icon="@drawable/ic_settings_vector"
-        android:title="Settings" />
-        
-    <item
         android:id="@+id/statsFragment"
         android:icon="@drawable/ic_chart_vector"
         android:title="Stats" />
+
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/ic_settings_vector"
+        android:title="Settings" />
 </menu>

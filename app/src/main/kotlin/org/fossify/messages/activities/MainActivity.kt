@@ -12,6 +12,8 @@ import android.provider.Settings
 import android.provider.Telephony
 import android.util.Log
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import org.fossify.commons.dialogs.PermissionRequiredDialog
 import org.fossify.commons.extensions.appLaunched
 import org.fossify.commons.extensions.checkAppSideloading
@@ -26,7 +28,9 @@ import org.fossify.messages.BuildConfig
 import org.fossify.messages.R
 import org.fossify.messages.databinding.ActivityMainBinding
 import org.fossify.messages.fragments.MessagesFragment
+import org.fossify.messages.fragments.SettingsFragment
 import org.fossify.messages.fragments.ShieldFragment
+import org.fossify.messages.phisheye.ModelUpdater
 import org.fossify.messages.phisheye.SpamScannerForegroundService
 
 class MainActivity : SimpleActivity() {
@@ -45,6 +49,14 @@ class MainActivity : SimpleActivity() {
 
         Log.d("MainActivity", "=== Starting SpamScannerForegroundService ===")
         SpamScannerForegroundService.start(this)
+
+        lifecycleScope.launch {
+            try {
+                ModelUpdater(this@MainActivity).checkForUpdates()
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Auto update check failed", e)
+            }
+        }
 
         setupBottomNavigation()
 
@@ -68,8 +80,8 @@ class MainActivity : SimpleActivity() {
             val (tag, fragmentClass) = when (item.itemId) {
                 R.id.messagesFragment -> "messages_tag" to MessagesFragment::class.java
                 R.id.shieldFragment -> "shield_tag" to ShieldFragment::class.java
-                R.id.settingsFragment -> "settings_tag" to Fragment::class.java // Placeholder
                 R.id.statsFragment -> "stats_tag" to Fragment::class.java // Placeholder
+                R.id.settingsFragment -> "settings_tag" to SettingsFragment::class.java
                 else -> throw IllegalStateException("Unknown navigation item: ${item.title}")
             }
 

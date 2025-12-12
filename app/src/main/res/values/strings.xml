@@ -143,6 +143,31 @@
     <string name="faq_3_text">Yes, you can schedule messages to be sent in the future by long pressing the Send button and picking the desired date and time.</string>
     <string name="faq_4_title">Why do my group message replies appear as individual texts to recipients?</string>
     <string name="faq_4_text">You need to enable \"Send group messages as MMS\" in the app settings. This will ensure that group messages are sent as proper MMS, allowing all participants to see each other\'s replies.</string>
+
+    <!-- PhishEye Settings -->
+    <string name="model_updates">Model Updates</string>
+    <string name="current_model_version">Current version: %s</string>
+    <string name="check_for_updates">Check for updates</string>
+    <string name="filtering_settings">Filtering</string>
+    <string name="filter_other_apps">Filter from other apps</string>
+    <string name="filter_other_apps_desc">Filtering from other apps does not remove message content, only notifies you if that message is a spam.</string>
+    <string name="filter_whatsapp">WhatsApp</string>
+    <string name="filter_telegram">Telegram</string>
+    <string name="checking_for_updates">Checking for updates…</string>
+    <string name="model_up_to_date">Model is up to date</string>
+    <string name="new_version_available">New version %s available. Downloading…</string>
+    <string name="model_updated_successfully">Model updated successfully to version %s</string>
+    <string name="update_failed">Update failed: %s</string>
+    <string name="last_checked">Last checked: %s</string>
+    <string name="auto_update_models">Auto-update models</string>
+    <string name="download_size">Download size: %s MB</string>
+    <string name="force_local_model">Force local model</string>
+    <string name="force_local_model_warning_title">Enable Force Local Model?</string>
+    <string name="force_local_model_warning_message">Your messages won\'t be screened by larger server-side models. Note this may reduce accuracy.</string>
+    <string name="filtering_info_note">As always, messages and calls from your contacts will not be screened.</string>
+    <string name="cancel">Cancel</string>
+    <string name="enable">Enable</string>
+
     <!--
         Haven\'t found some strings? There\'s more at
         https://github.com/FossifyOrg/Commons/tree/master/commons/src/main/res

@@ -65,6 +65,27 @@ class NotificationListener : NotificationListenerService() {
             return
         }
 
+        val prefs = getSharedPreferences("phisheye_settings", android.content.Context.MODE_PRIVATE)
+        val filterOtherApps = prefs.getBoolean("filter_other_apps", false)
+
+        if (!filterOtherApps) {
+            return
+        }
+
+        val filterWhatsapp = prefs.getBoolean("filter_whatsapp", false)
+        val filterTelegram = prefs.getBoolean("filter_telegram", false)
+
+        val isWhatsApp = sourcePackage == "com.whatsapp" || sourcePackage == "com.whatsapp.w4b"
+        val isTelegram = sourcePackage == "org.telegram.messenger" || sourcePackage == "org.telegram.messenger.web"
+
+        var isAllowed = false
+        if (isWhatsApp && filterWhatsapp) isAllowed = true
+        if (isTelegram && filterTelegram) isAllowed = true
+
+        if (!isAllowed) {
+            return
+        }
+
         val notification = sbn.notification
         val extras = notification.extras
 

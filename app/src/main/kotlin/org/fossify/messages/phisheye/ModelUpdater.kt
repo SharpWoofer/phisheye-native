@@ -24,7 +24,8 @@ class ModelUpdater(private val context: Context) {
         val hasUpdate: Boolean,
         val lastCheckedAt: Long,
         val errorMessage: String? = null,
-        val throttled: Boolean = false
+        val throttled: Boolean = false,
+        val downloadSize: Long = 0L
     )
 
     suspend fun checkForUpdates(force: Boolean = false): UpdateCheckResult =
@@ -66,13 +67,23 @@ class ModelUpdater(private val context: Context) {
                 }
 
                 val hasUpdate = remoteVersion.isNewerThan(localVersion)
+                var totalSize = 0L
+                if (hasUpdate) {
+                     // Estimate size by checking main model file + others
+                     totalSize += getRemoteFileSize("$HF_REPO_URL/$MODEL_FILENAME")
+                     totalSize += getRemoteFileSize("$HF_REPO_URL/$TOKENIZER_FILENAME")
+                     totalSize += getRemoteFileSize("$HF_REPO_URL/$VOCAB_FILENAME")
+                     totalSize += getRemoteFileSize("$HF_REPO_URL/$MERGES_FILENAME")
+                }
+
                 return@withContext UpdateCheckResult(
                     localVersion = localVersion,
                     remoteVersion = remoteVersion,
                     hasUpdate = hasUpdate,
                     lastCheckedAt = now,
                     errorMessage = null,
-                    throttled = false
+                    throttled = false,
+                    downloadSize = totalSize
                 )
             } catch (ex: Exception) {
                 Log.e(TAG, "Failed to check for model updates", ex)
@@ -87,21 +98,23 @@ class ModelUpdater(private val context: Context) {
             }
         }
 
-    suspend fun downloadNewModel(remoteVersion: String): Result<Unit> =
+    suspend fun downloadNewModel(remoteVersion: String, onProgress: ((Int) -> Unit)? = null): Result<Unit> =
         withContext(Dispatchers.IO) {
             try {
                 val modelFile = File(modelDirectory, MODEL_FILENAME)
-                // ADD a file definition for tokenizer.json
                 val tokenizerFile = File(modelDirectory, TOKENIZER_FILENAME)
                 val vocabFile = File(modelDirectory, VOCAB_FILENAME)
-                // ADD a file definition for merges.txt
                 val mergesFile = File(modelDirectory, MERGES_FILENAME)
 
-                // Download all four files
+                // Simple progress distribution (25% per file for simplicity)
                 downloadFile("$HF_REPO_URL/$MODEL_FILENAME", modelFile)
-                downloadFile("$HF_REPO_URL/$TOKENIZER_FILENAME", tokenizerFile) // ADD THIS LINE
+                onProgress?.invoke(25)
+                downloadFile("$HF_REPO_URL/$TOKENIZER_FILENAME", tokenizerFile)
+                onProgress?.invoke(50)
                 downloadFile("$HF_REPO_URL/$VOCAB_FILENAME", vocabFile)
-                downloadFile("$HF_REPO_URL/$MERGES_FILENAME", mergesFile)       // ADD THIS LINE
+                onProgress?.invoke(75)
+                downloadFile("$HF_REPO_URL/$MERGES_FILENAME", mergesFile)
+                onProgress?.invoke(100)
 
                 prefs.edit()
                     .putString(KEY_MODEL_VERSION, remoteVersion)
@@ -137,6 +150,21 @@ class ModelUpdater(private val context: Context) {
             }
         } finally {
             connection.disconnect()
+        }
+    }
+
+    private fun getRemoteFileSize(url: String): Long {
+        return try {
+            val connection = URL(url).openConnection() as HttpURLConnection
+            connection.requestMethod = "HEAD"
+            connection.connectTimeout = CONNECT_TIMEOUT_MS
+            connection.connect()
+            val length = connection.contentLengthLong
+            connection.disconnect()
+            if (length < 0) 0L else length
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to get file size for $url", e)
+            0L
         }
     }
 

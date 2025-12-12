@@ -43,7 +43,10 @@ class SpamHandler(context: Context) {
         var analysisSource = "local"
         var reason: String? = null
 
-        val shouldQueryRemote = hasGroqApiKey &&
+        val prefs = appContext.getSharedPreferences("phisheye_settings", Context.MODE_PRIVATE)
+        val forceLocal = prefs.getBoolean("force_local_model", false)
+
+        val shouldQueryRemote = !forceLocal && hasGroqApiKey &&
                 (localLabel.equals("ERROR", ignoreCase = true) || localConfidence < SECONDARY_CONFIDENCE_THRESHOLD)
 
         if (shouldQueryRemote) {
