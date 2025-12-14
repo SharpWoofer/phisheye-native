@@ -13,7 +13,7 @@ import org.fossify.commons.extensions.normalizePhoneNumber
 import org.fossify.commons.extensions.showErrorToast
 import org.fossify.commons.helpers.SimpleContactsHelper
 import org.fossify.commons.helpers.ensureBackgroundThread
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.extensions.getConversations
 import com.caihongqi.phisheye.extensions.getLatestMMS
 import com.caihongqi.phisheye.extensions.insertOrUpdateConversation

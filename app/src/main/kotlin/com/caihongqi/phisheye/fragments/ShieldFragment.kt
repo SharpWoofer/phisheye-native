@@ -18,9 +18,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.adapters.ShieldAdapter
-import org.fossify.messages.databinding.FragmentShieldBinding
+import com.caihongqi.phisheye.databinding.FragmentShieldBinding
 import com.caihongqi.phisheye.models.ShieldFilter
 import com.caihongqi.phisheye.models.ShieldListItem
 import com.caihongqi.phisheye.viewmodels.ShieldViewModel

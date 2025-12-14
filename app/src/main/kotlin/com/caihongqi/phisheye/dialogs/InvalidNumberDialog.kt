@@ -1,9 +1,9 @@
 package com.caihongqi.phisheye.dialogs
 
-import org.fossify.commons.activities.BaseSimpleActivity
+import com.caihongqi.phisheye.activities.BaseSimpleActivity
 import org.fossify.commons.extensions.getAlertDialogBuilder
 import org.fossify.commons.extensions.setupDialogStuff
-import org.fossify.messages.databinding.DialogInvalidNumberBinding
+import com.caihongqi.phisheye.databinding.DialogInvalidNumberBinding
 
 class InvalidNumberDialog(val activity: BaseSimpleActivity, val text: String) {
     init {

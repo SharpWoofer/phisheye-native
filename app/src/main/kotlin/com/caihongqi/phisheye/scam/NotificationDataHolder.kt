@@ -1,4 +1,4 @@
-package com.caihongqi.phisheye.phisheye
+package com.caihongqi.phisheye.scam
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

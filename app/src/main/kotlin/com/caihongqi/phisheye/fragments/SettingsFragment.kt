@@ -16,9 +16,9 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import org.fossify.messages.R
-import org.fossify.messages.databinding.FragmentSettingsBinding
-import com.caihongqi.phisheye.phisheye.ModelUpdater
+import com.caihongqi.phisheye.R
+import com.caihongqi.phisheye.databinding.FragmentSettingsBinding
+import com.caihongqi.phisheye.scam.ModelUpdater
 import java.util.Date
 
 import android.util.TypedValue

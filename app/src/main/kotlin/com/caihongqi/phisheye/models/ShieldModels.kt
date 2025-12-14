@@ -1,6 +1,6 @@
 package com.caihongqi.phisheye.models
 
-import com.caihongqi.phisheye.phisheye.DetectionHistoryEntity
+import com.caihongqi.phisheye.scam.DetectionHistoryEntity
 
 sealed interface ShieldListItem {
     

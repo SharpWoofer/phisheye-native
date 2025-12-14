@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import com.caihongqi.phisheye.phisheye.ScamImageAnalyzer
+import com.caihongqi.phisheye.scam.ScamImageAnalyzer
 
 class AnalyzeScamActivity : Activity() {
 

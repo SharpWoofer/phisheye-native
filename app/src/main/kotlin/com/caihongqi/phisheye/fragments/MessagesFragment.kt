@@ -19,12 +19,12 @@ import org.fossify.commons.extensions.*
 import org.fossify.commons.helpers.*
 import org.fossify.commons.models.FAQItem
 import org.fossify.commons.models.Release
-import org.fossify.messages.BuildConfig
-import org.fossify.messages.R
+import com.caihongqi.phisheye.BuildConfig
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.activities.*
 import com.caihongqi.phisheye.adapters.ConversationsAdapter
 import com.caihongqi.phisheye.adapters.SearchResultsAdapter
-import org.fossify.messages.databinding.FragmentMessagesBinding
+import com.caihongqi.phisheye.databinding.FragmentMessagesBinding
 import com.caihongqi.phisheye.extensions.*
 import com.caihongqi.phisheye.helpers.THREAD_ID
 import com.caihongqi.phisheye.helpers.THREAD_TITLE
@@ -91,6 +91,10 @@ class MessagesFragment : Fragment(), ConversationInteractionListener {
 
     private fun Int.dpToPx(): Int = (this * resources.displayMetrics.density).toInt()
 
+    private fun updateTextColor(color: Int = 0) {
+        // No-op or implement if needed
+    }
+
     private fun setupSearch() {
         // Make the entire search bar clickable to focus SearchView
         binding.searchBarCard.setOnClickListener {
@@ -153,10 +157,10 @@ class MessagesFragment : Fragment(), ConversationInteractionListener {
                         launchArchivedConversations()
                         true
                     }
-                    R.id.about -> {
-                        launchAbout()
-                        true
-                    }
+//                    R.id.about -> {
+//                        //launchAbout()
+//                        true
+//                    }
                     else -> false
                 }
             }

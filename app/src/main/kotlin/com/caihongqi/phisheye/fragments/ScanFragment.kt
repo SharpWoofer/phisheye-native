@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import org.fossify.messages.R
-import com.caihongqi.phisheye.phisheye.ScamImageAnalyzer
+import com.caihongqi.phisheye.R
+import com.caihongqi.phisheye.scam.ScamImageAnalyzer
 
 class ScanFragment : Fragment() {
 

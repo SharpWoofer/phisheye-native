@@ -15,7 +15,7 @@ import com.klinker.android.send_message.Settings
 import com.klinker.android.send_message.Transaction
 import org.fossify.commons.extensions.showErrorToast
 import org.fossify.commons.extensions.toast
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.extensions.getThreadId
 import com.caihongqi.phisheye.extensions.isPlainTextMimeType
 import com.caihongqi.phisheye.extensions.smsSender

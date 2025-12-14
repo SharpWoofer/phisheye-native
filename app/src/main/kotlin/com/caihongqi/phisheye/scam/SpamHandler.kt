@@ -1,4 +1,4 @@
-package com.caihongqi.phisheye.phisheye
+package com.caihongqi.phisheye.scam
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -14,7 +14,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.fossify.messages.BuildConfig
+import com.caihongqi.phisheye.BuildConfig
 import com.caihongqi.phisheye.activities.MainActivity
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -34,7 +34,7 @@ class SpamHandler(context: Context) {
                 spamDetector.predict(info.text)
             }
         } catch (ex: Exception) {
-            Log.e(TAG, "Local spam detection failed: ${ex.message}", ex)
+            Log.e(TAG, "Local scam detection failed: ${ex.message}", ex)
             Pair("HAM", 0.5f)
         }
 
@@ -85,14 +85,14 @@ class SpamHandler(context: Context) {
                 Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
             if (!permissionGranted) {
-                Log.w(TAG, "POST_NOTIFICATIONS permission missing; skipping spam alert.")
+                Log.w(TAG, "POST_NOTIFICATIONS permission missing; skipping scam alert.")
                 return
             }
         }
 
         val notificationManager = NotificationManagerCompat.from(appContext)
         if (!notificationManager.areNotificationsEnabled()) {
-            Log.w(TAG, "Notifications are disabled for PhishEye; spam alert suppressed.")
+            Log.w(TAG, "Notifications are disabled for PhishEye; scam alert suppressed.")
             return
         }
 
@@ -127,7 +127,7 @@ class SpamHandler(context: Context) {
         try {
             notificationManager.notify(notificationId, notification)
         } catch (ex: SecurityException) {
-            Log.e(TAG, "Unable to post spam alert notification: ${ex.message}", ex)
+            Log.e(TAG, "Unable to post scam alert notification: ${ex.message}", ex)
         }
     }
 
@@ -153,7 +153,7 @@ class SpamHandler(context: Context) {
         private const val SPAM_ALERT_CHANNEL_ID = "phisheye_spam_alerts"
         private const val SPAM_ALERT_CHANNEL_NAME = "Spam Alerts"
         private const val SPAM_ALERT_CHANNEL_DESCRIPTION =
-            "Warnings generated when PhishEye detects likely spam."
+            "Warnings generated when PhishEye detects likely scam."
         private val spamNotificationCounter = AtomicInteger(2000)
     }
 }

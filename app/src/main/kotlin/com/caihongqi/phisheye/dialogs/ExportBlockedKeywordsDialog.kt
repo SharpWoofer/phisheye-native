@@ -1,8 +1,8 @@
 package com.caihongqi.phisheye.dialogs
 
 import androidx.appcompat.app.AlertDialog
-import org.fossify.commons.activities.BaseSimpleActivity
-import org.fossify.commons.dialogs.FilePickerDialog
+import com.caihongqi.phisheye.activities.BaseSimpleActivity
+import com.caihongqi.phisheye.dialogs.FilePickerDialog
 import org.fossify.commons.extensions.beGone
 import org.fossify.commons.extensions.getAlertDialogBuilder
 import org.fossify.commons.extensions.getCurrentFormattedDateTime
@@ -15,8 +15,8 @@ import org.fossify.commons.extensions.showKeyboard
 import org.fossify.commons.extensions.toast
 import org.fossify.commons.extensions.value
 import org.fossify.commons.helpers.ensureBackgroundThread
-import org.fossify.messages.R
-import org.fossify.messages.databinding.DialogExportBlockedKeywordsBinding
+import com.caihongqi.phisheye.R
+import com.caihongqi.phisheye.databinding.DialogExportBlockedKeywordsBinding
 import com.caihongqi.phisheye.extensions.config
 import com.caihongqi.phisheye.helpers.BLOCKED_KEYWORDS_EXPORT_EXTENSION
 import java.io.File

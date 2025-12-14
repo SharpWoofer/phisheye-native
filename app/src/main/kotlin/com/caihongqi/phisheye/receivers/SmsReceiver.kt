@@ -106,11 +106,11 @@ class SmsReceiver : BroadcastReceiver() {
                         }
 
                         if (shouldCheck) {
-                            val handler = com.caihongqi.phisheye.phisheye.SpamHandler(context)
-                            val info = com.caihongqi.phisheye.phisheye.NotificationInfo("com.android.mms", "SMS", address, body)
+                            val handler = com.caihongqi.phisheye.scam.SpamHandler(context)
+                            val info = com.caihongqi.phisheye.scam.NotificationInfo("com.android.mms", "SMS", address, body)
                             runBlocking {
                                 val result = handler.analyzeContent(info)
-                                com.caihongqi.phisheye.phisheye.NotificationDataHolder.onNewNotification(result)
+                                com.caihongqi.phisheye.scam.NotificationDataHolder.onNewNotification(result)
                                 if (result.prediction == "SPAM") {
                                     handler.showSpamAlertNotification(result)
                                 }

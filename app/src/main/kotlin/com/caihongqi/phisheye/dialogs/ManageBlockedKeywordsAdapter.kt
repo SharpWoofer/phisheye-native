@@ -2,16 +2,16 @@ package com.caihongqi.phisheye.dialogs
 
 import android.view.*
 import android.widget.PopupMenu
-import org.fossify.commons.activities.BaseSimpleActivity
-import org.fossify.commons.adapters.MyRecyclerViewAdapter
+import com.caihongqi.phisheye.activities.BaseSimpleActivity
+import com.caihongqi.phisheye.adapters.MyRecyclerViewAdapter
 import org.fossify.commons.extensions.copyToClipboard
 import org.fossify.commons.extensions.getPopupMenuTheme
 import org.fossify.commons.extensions.getProperTextColor
 import org.fossify.commons.extensions.setupViewBackground
 import org.fossify.commons.interfaces.RefreshRecyclerViewListener
 import org.fossify.commons.views.MyRecyclerView
-import org.fossify.messages.R
-import org.fossify.messages.databinding.ItemManageBlockedKeywordBinding
+import com.caihongqi.phisheye.R
+import com.caihongqi.phisheye.databinding.ItemManageBlockedKeywordBinding
 import com.caihongqi.phisheye.extensions.config
 
 class ManageBlockedKeywordsAdapter(
@@ -55,7 +55,7 @@ class ManageBlockedKeywordsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemManageBlockedKeywordBinding.inflate(layoutInflater, parent, false)
-        return createViewHolder(binding.root)
+        return ViewHolder(binding.root)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

@@ -5,13 +5,13 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
-import org.fossify.commons.adapters.MyRecyclerViewAdapter
+import com.caihongqi.phisheye.adapters.MyRecyclerViewAdapter
 import org.fossify.commons.extensions.getTextSize
 import org.fossify.commons.extensions.highlightTextPart
 import org.fossify.commons.helpers.SimpleContactsHelper
 import org.fossify.commons.views.MyRecyclerView
 import com.caihongqi.phisheye.activities.SimpleActivity
-import org.fossify.messages.databinding.ItemSearchResultBinding
+import com.caihongqi.phisheye.databinding.ItemSearchResultBinding
 import com.caihongqi.phisheye.models.SearchResult
 
 class SearchResultsAdapter(
@@ -90,7 +90,7 @@ class SearchResultsAdapter(
     }
 
     override fun onViewRecycled(holder: ViewHolder) {
-        super.onViewRecycled(holder)
+        // super.onViewRecycled(holder)
         if (!activity.isDestroyed && !activity.isFinishing) {
             val binding = ItemSearchResultBinding.bind(holder.itemView)
             Glide.with(activity).clear(binding.searchResultImage)

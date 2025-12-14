@@ -1,4 +1,4 @@
-package com.caihongqi.phisheye.phisheye
+package com.caihongqi.phisheye.scam
 
 import android.app.Notification
 import android.content.ComponentName

@@ -27,8 +27,8 @@ import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import org.fossify.commons.adapters.MyRecyclerViewListAdapter
-import org.fossify.commons.dialogs.ConfirmationDialog
+import com.caihongqi.phisheye.adapters.MyRecyclerViewListAdapter
+import com.caihongqi.phisheye.dialogs.ConfirmationDialog
 import org.fossify.commons.extensions.applyColorFilter
 import org.fossify.commons.extensions.beGone
 import org.fossify.commons.extensions.beVisible
@@ -44,19 +44,20 @@ import org.fossify.commons.extensions.usableScreenSize
 import org.fossify.commons.helpers.SimpleContactsHelper
 import org.fossify.commons.helpers.ensureBackgroundThread
 import org.fossify.commons.views.MyRecyclerView
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.activities.NewConversationActivity
 import com.caihongqi.phisheye.activities.SimpleActivity
+import com.caihongqi.phisheye.activities.BaseSimpleActivity
 import com.caihongqi.phisheye.activities.ThreadActivity
 import com.caihongqi.phisheye.activities.VCardViewerActivity
-import org.fossify.messages.databinding.ItemAttachmentDocumentBinding
-import org.fossify.messages.databinding.ItemAttachmentImageBinding
-import org.fossify.messages.databinding.ItemAttachmentVcardBinding
-import org.fossify.messages.databinding.ItemMessageBinding
-import org.fossify.messages.databinding.ItemThreadDateTimeBinding
-import org.fossify.messages.databinding.ItemThreadErrorBinding
-import org.fossify.messages.databinding.ItemThreadSendingBinding
-import org.fossify.messages.databinding.ItemThreadSuccessBinding
+import com.caihongqi.phisheye.databinding.ItemAttachmentDocumentBinding
+import com.caihongqi.phisheye.databinding.ItemAttachmentImageBinding
+import com.caihongqi.phisheye.databinding.ItemAttachmentVcardBinding
+import com.caihongqi.phisheye.databinding.ItemMessageBinding
+import com.caihongqi.phisheye.databinding.ItemThreadDateTimeBinding
+import com.caihongqi.phisheye.databinding.ItemThreadErrorBinding
+import com.caihongqi.phisheye.databinding.ItemThreadSendingBinding
+import com.caihongqi.phisheye.databinding.ItemThreadSuccessBinding
 import com.caihongqi.phisheye.dialogs.DeleteConfirmationDialog
 import com.caihongqi.phisheye.dialogs.MessageDetailsDialog
 import com.caihongqi.phisheye.dialogs.SelectTextDialog
@@ -249,13 +250,13 @@ class ThreadAdapter(
     private fun selectText() {
         val firstItem = getSelectedItems().firstOrNull() as? Message ?: return
         if (firstItem.body.trim().isNotEmpty()) {
-            SelectTextDialog(activity, firstItem.body)
+            SelectTextDialog(activity as BaseSimpleActivity, firstItem.body)
         }
     }
 
     private fun showMessageDetails() {
         val message = getSelectedItems().firstOrNull() as? Message ?: return
-        MessageDetailsDialog(activity, message)
+        MessageDetailsDialog(activity as BaseSimpleActivity, message)
     }
 
     private fun askConfirmDelete() {
@@ -514,7 +515,7 @@ class ThreadAdapter(
         }
 
         imageView.attachmentImage.setOnClickListener {
-            if (actModeCallback.isSelectable) {
+            if (actMode != null) {
                 holder.viewClicked(message)
             } else {
                 activity.launchViewIntent(uri, mimetype, attachment.filename)
@@ -533,7 +534,7 @@ class ThreadAdapter(
                 activity = activity,
                 uri = uri,
                 onClick = {
-                    if (actModeCallback.isSelectable) {
+                    if (actMode != null) {
                         holder.viewClicked(message)
                     } else {
                         val intent = Intent(activity, VCardViewerActivity::class.java).also {
@@ -558,7 +559,7 @@ class ThreadAdapter(
                 title = attachment.filename,
                 mimeType = attachment.mimetype,
                 onClick = {
-                    if (actModeCallback.isSelectable) {
+                    if (actMode != null) {
                         holder.viewClicked(message)
                     } else {
                         activity.launchViewIntent(uri, mimetype, attachment.filename)
@@ -613,7 +614,7 @@ class ThreadAdapter(
     }
 
     override fun onViewRecycled(holder: ViewHolder) {
-        super.onViewRecycled(holder)
+        // super.onViewRecycled(holder)
         if (!activity.isDestroyed && !activity.isFinishing) {
             val binding = (holder as ThreadViewHolder).binding
             if (binding is ItemMessageBinding) {

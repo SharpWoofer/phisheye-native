@@ -2,12 +2,12 @@ package com.caihongqi.phisheye.dialogs
 
 import android.annotation.SuppressLint
 import android.telephony.SubscriptionInfo
-import org.fossify.commons.activities.BaseSimpleActivity
+import com.caihongqi.phisheye.activities.BaseSimpleActivity
 import org.fossify.commons.dialogs.BasePropertiesDialog
 import org.fossify.commons.extensions.getAlertDialogBuilder
 import org.fossify.commons.extensions.getTimeFormatWithSeconds
 import org.fossify.commons.extensions.setupDialogStuff
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.extensions.config
 import com.caihongqi.phisheye.extensions.subscriptionManagerCompat
 import com.caihongqi.phisheye.models.Message

@@ -1,4 +1,4 @@
-package com.caihongqi.phisheye.phisheye
+package com.caihongqi.phisheye.scam
 
 import android.util.Log
 import okhttp3.MediaType.Companion.toMediaType
@@ -16,7 +16,7 @@ private const val REMOTE_LABEL_HAM = "HAM"
 private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
 
 /**
- * Performs a secondary spam/ham verification using the Groq chat completion API.
+ * Performs a secondary scam/ham verification using the Groq chat completion API.
  */
 class GroqSpamVerifier(
     private val apiKey: String,

@@ -1,12 +1,12 @@
 package com.caihongqi.phisheye.dialogs
 
 import androidx.appcompat.app.AlertDialog
-import org.fossify.commons.activities.BaseSimpleActivity
+import com.caihongqi.phisheye.activities.BaseSimpleActivity
 import org.fossify.commons.extensions.getAlertDialogBuilder
 import org.fossify.commons.extensions.setupDialogStuff
 import org.fossify.commons.extensions.showKeyboard
 import org.fossify.commons.extensions.value
-import org.fossify.messages.databinding.DialogAddBlockedKeywordBinding
+import com.caihongqi.phisheye.databinding.DialogAddBlockedKeywordBinding
 import com.caihongqi.phisheye.extensions.config
 
 class AddBlockedKeywordDialog(val activity: BaseSimpleActivity, private val originalKeyword: String? = null, val callback: () -> Unit) {

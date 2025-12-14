@@ -6,7 +6,7 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
-import org.fossify.commons.adapters.MyRecyclerViewAdapter
+import com.caihongqi.phisheye.adapters.MyRecyclerViewAdapter
 import org.fossify.commons.databinding.ItemContactWithNumberBinding
 import org.fossify.commons.extensions.getTextSize
 import org.fossify.commons.helpers.SimpleContactsHelper
@@ -80,7 +80,7 @@ class ContactsAdapter(
     }
 
     override fun onViewRecycled(holder: ViewHolder) {
-        super.onViewRecycled(holder)
+        // super.onViewRecycled(holder)
         if (!activity.isDestroyed && !activity.isFinishing) {
             val binding = ItemContactWithNumberBinding.bind(holder.itemView)
             Glide.with(activity).clear(binding.itemContactImage)

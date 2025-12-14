@@ -18,7 +18,7 @@ import org.fossify.commons.extensions.getProperPrimaryColor
 import org.fossify.commons.extensions.notificationManager
 import org.fossify.commons.helpers.SimpleContactsHelper
 import org.fossify.commons.helpers.ensureBackgroundThread
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.activities.ThreadActivity
 import com.caihongqi.phisheye.extensions.config
 import com.caihongqi.phisheye.extensions.shortcutHelper

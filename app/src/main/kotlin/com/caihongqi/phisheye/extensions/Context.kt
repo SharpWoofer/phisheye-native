@@ -49,7 +49,7 @@ import org.fossify.commons.helpers.ensureBackgroundThread
 import org.fossify.commons.helpers.isQPlus
 import org.fossify.commons.models.PhoneNumber
 import org.fossify.commons.models.SimpleContact
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.databases.MessagesDatabase
 import com.caihongqi.phisheye.helpers.AttachmentUtils.parseAttachmentNames
 import com.caihongqi.phisheye.helpers.Config

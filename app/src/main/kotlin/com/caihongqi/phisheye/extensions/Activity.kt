@@ -5,7 +5,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
-import org.fossify.commons.activities.BaseSimpleActivity
+import com.caihongqi.phisheye.activities.BaseSimpleActivity
 import org.fossify.commons.extensions.getMimeType
 import org.fossify.commons.extensions.hideKeyboard
 import org.fossify.commons.extensions.isPackageInstalled

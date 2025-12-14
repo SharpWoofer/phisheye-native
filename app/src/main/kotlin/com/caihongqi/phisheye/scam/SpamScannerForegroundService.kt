@@ -1,4 +1,4 @@
-package com.caihongqi.phisheye.phisheye
+package com.caihongqi.phisheye.scam
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -41,7 +41,7 @@ class SpamScannerForegroundService : Service() {
                 "Spam Scanner",
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "Shows when spam scanner is active"
+                description = "Shows when scam scanner is active"
             }
             val manager = getSystemService(NotificationManager::class.java)
             manager.createNotificationChannel(channel)
@@ -51,7 +51,7 @@ class SpamScannerForegroundService : Service() {
     private fun createNotification(): Notification {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Spam Scanner Active")
-            .setContentText("Monitoring notifications for spam")
+            .setContentText("Monitoring notifications for scam")
             .setSmallIcon(android.R.drawable.ic_secure)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)

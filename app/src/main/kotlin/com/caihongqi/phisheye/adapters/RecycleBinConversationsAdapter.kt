@@ -5,7 +5,7 @@ import org.fossify.commons.dialogs.ConfirmationDialog
 import org.fossify.commons.extensions.notificationManager
 import org.fossify.commons.helpers.ensureBackgroundThread
 import org.fossify.commons.views.MyRecyclerView
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.activities.SimpleActivity
 import com.caihongqi.phisheye.extensions.deleteConversation
 import com.caihongqi.phisheye.extensions.restoreAllMessagesFromRecycleBinForConversation

@@ -8,7 +8,7 @@ import android.text.format.DateFormat
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import org.fossify.commons.activities.BaseSimpleActivity
+import com.caihongqi.phisheye.activities.BaseSimpleActivity
 import org.fossify.commons.extensions.applyColorFilter
 import org.fossify.commons.extensions.getAlertDialogBuilder
 import org.fossify.commons.extensions.getDatePickerDialogTheme
@@ -17,8 +17,8 @@ import org.fossify.commons.extensions.getTimeFormat
 import org.fossify.commons.extensions.isDynamicTheme
 import org.fossify.commons.extensions.setupDialogStuff
 import org.fossify.commons.extensions.toast
-import org.fossify.messages.R
-import org.fossify.messages.databinding.ScheduleMessageDialogBinding
+import com.caihongqi.phisheye.R
+import com.caihongqi.phisheye.databinding.ScheduleMessageDialogBinding
 import com.caihongqi.phisheye.extensions.config
 import com.caihongqi.phisheye.extensions.roundToClosestMultipleOf
 import org.joda.time.DateTime

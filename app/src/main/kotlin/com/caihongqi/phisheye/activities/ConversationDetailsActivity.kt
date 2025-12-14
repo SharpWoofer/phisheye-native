@@ -22,7 +22,7 @@ import org.fossify.commons.helpers.NavigationIcon
 import org.fossify.commons.helpers.ensureBackgroundThread
 import org.fossify.commons.models.SimpleContact
 import com.caihongqi.phisheye.adapters.ContactsAdapter
-import org.fossify.messages.databinding.ActivityConversationDetailsBinding
+import com.caihongqi.phisheye.databinding.ActivityConversationDetailsBinding
 import com.caihongqi.phisheye.dialogs.RenameConversationDialog
 import com.caihongqi.phisheye.extensions.config
 import com.caihongqi.phisheye.extensions.conversationsDB

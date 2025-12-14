@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.qtalk.recyclerviewfastscroller.RecyclerViewFastScroller
-import org.fossify.commons.adapters.MyRecyclerViewListAdapter
+import com.caihongqi.phisheye.adapters.MyRecyclerViewListAdapter
 import org.fossify.commons.extensions.applyColorFilter
 import org.fossify.commons.extensions.beVisibleIf
 import org.fossify.commons.extensions.formatDateOrTime
@@ -23,8 +23,8 @@ import org.fossify.commons.extensions.setupViewBackground
 import org.fossify.commons.helpers.SimpleContactsHelper
 import org.fossify.commons.helpers.ensureBackgroundThread
 import org.fossify.commons.views.MyRecyclerView
-import org.fossify.commons.activities.BaseSimpleActivity
-import org.fossify.messages.databinding.ItemConversationBinding
+import com.caihongqi.phisheye.activities.BaseSimpleActivity
+import com.caihongqi.phisheye.databinding.ItemConversationBinding
 import com.caihongqi.phisheye.extensions.config
 import com.caihongqi.phisheye.extensions.getAllDrafts
 import com.caihongqi.phisheye.models.Conversation
@@ -38,7 +38,7 @@ abstract class BaseConversationsAdapter(
 ) : MyRecyclerViewListAdapter<Conversation>(
     activity = context as BaseSimpleActivity,
     recyclerView = recyclerView,
-    diffUtil = ConversationDiffCallback(),
+    diffCallback = ConversationDiffCallback(),
     itemClick = itemClick,
     onRefresh = onRefresh
 ),
@@ -127,7 +127,7 @@ abstract class BaseConversationsAdapter(
     override fun getItemId(position: Int) = getItem(position).threadId
 
     override fun onViewRecycled(holder: ViewHolder) {
-        super.onViewRecycled(holder)
+        // super.onViewRecycled(holder)
         val activity = context as? Activity
         if (activity?.isDestroyed == false && !activity.isFinishing) {
             val itemView = ItemConversationBinding.bind(holder.itemView)

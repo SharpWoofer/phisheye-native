@@ -7,8 +7,8 @@ import org.fossify.commons.extensions.getAlertDialogBuilder
 import org.fossify.commons.extensions.setupDialogStuff
 import org.fossify.commons.extensions.showKeyboard
 import org.fossify.commons.extensions.toast
-import org.fossify.messages.R
-import org.fossify.messages.databinding.DialogRenameConversationBinding
+import com.caihongqi.phisheye.R
+import com.caihongqi.phisheye.databinding.DialogRenameConversationBinding
 import com.caihongqi.phisheye.models.Conversation
 
 class RenameConversationDialog(

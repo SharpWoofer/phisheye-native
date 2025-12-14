@@ -49,10 +49,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import org.fossify.commons.dialogs.ConfirmationDialog
-import org.fossify.commons.dialogs.FeatureLockedDialog
-import org.fossify.commons.dialogs.PermissionRequiredDialog
-import org.fossify.commons.dialogs.RadioGroupDialog
+import com.caihongqi.phisheye.dialogs.ConfirmationDialog
+import com.caihongqi.phisheye.dialogs.FeatureLockedDialog
+import com.caihongqi.phisheye.dialogs.PermissionRequiredDialog
+import com.caihongqi.phisheye.dialogs.RadioGroupDialog
 import org.fossify.commons.extensions.addBlockedNumber
 import org.fossify.commons.extensions.addLockedLabelIfNeeded
 import org.fossify.commons.extensions.applyColorFilter
@@ -102,13 +102,13 @@ import org.fossify.commons.helpers.isSPlus
 import org.fossify.commons.models.PhoneNumber
 import org.fossify.commons.models.RadioItem
 import org.fossify.commons.models.SimpleContact
-import org.fossify.messages.BuildConfig
-import org.fossify.messages.R
+import com.caihongqi.phisheye.BuildConfig
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.adapters.AttachmentsAdapter
 import com.caihongqi.phisheye.adapters.AutoCompleteTextViewAdapter
 import com.caihongqi.phisheye.adapters.ThreadAdapter
-import org.fossify.messages.databinding.ActivityThreadBinding
-import org.fossify.messages.databinding.ItemSelectedContactBinding
+import com.caihongqi.phisheye.databinding.ActivityThreadBinding
+import com.caihongqi.phisheye.databinding.ItemSelectedContactBinding
 import com.caihongqi.phisheye.dialogs.InvalidNumberDialog
 import com.caihongqi.phisheye.dialogs.RenameConversationDialog
 import com.caihongqi.phisheye.dialogs.ScheduleMessageDialog
@@ -361,7 +361,7 @@ class ThreadActivity : SimpleActivity() {
                 participants.size > 1 && conversation != null && !isRecycleBin
             findItem(R.id.conversation_details).isVisible = conversation != null && !isRecycleBin
             findItem(R.id.block_number).title =
-                addLockedLabelIfNeeded(org.fossify.commons.R.string.block_number)
+                getString(org.fossify.commons.R.string.block_number)
             findItem(R.id.block_number).isVisible = !isRecycleBin
             findItem(R.id.dial_number).isVisible =
                 participants.size == 1 && !isSpecialNumber() && !isRecycleBin
@@ -990,8 +990,8 @@ class ThreadActivity : SimpleActivity() {
                 applyColorFilter(textColor)
                 setOnClickListener {
                     InvalidNumberDialog(
-                        activity = this@ThreadActivity,
-                        text = getString(R.string.invalid_short_code_desc)
+                        this@ThreadActivity as com.caihongqi.phisheye.activities.BaseSimpleActivity,
+                        getString(R.string.invalid_short_code_desc)
                     )
                 }
                 tooltipText = getString(org.fossify.commons.R.string.more_info)
@@ -1091,11 +1091,7 @@ class ThreadActivity : SimpleActivity() {
     }
 
     private fun tryBlocking() {
-        if (isOrWasThankYouInstalled()) {
-            blockNumber()
-        } else {
-            FeatureLockedDialog(this) { }
-        }
+        blockNumber()
     }
 
     private fun blockNumber() {
@@ -1386,21 +1382,22 @@ class ThreadActivity : SimpleActivity() {
                 val outputFile = File(getAttachmentsDir(), "${contact.contactId}.vcf")
                 val outputStream = outputFile.outputStream()
 
-                VcfExporter().exportContacts(
-                    activity = this,
-                    outputStream = outputStream,
-                    contacts = arrayListOf(contact),
-                    showExportingToast = false,
-                ) {
-                    if (it == ExportResult.EXPORT_OK) {
-                        val vCardUri = getMyFileUri(outputFile)
-                        runOnUiThread {
-                            addAttachment(vCardUri)
-                        }
-                    } else {
-                        toast(org.fossify.commons.R.string.unknown_error_occurred)
-                    }
-                }
+                // VcfExporter().exportContacts(
+                //    activity = this,
+                //    outputStream = outputStream,
+                //    contacts = arrayListOf(contact),
+                //    showExportingToast = false,
+                // ) {
+                //    if (it == ExportResult.EXPORT_OK) {
+                //        val vCardUri = getMyFileUri(outputFile)
+                //        runOnUiThread {
+                //            addAttachment(vCardUri)
+                //        }
+                //    } else {
+                //        toast(org.fossify.commons.R.string.unknown_error_occurred)
+                //    }
+                // }
+                toast(org.fossify.commons.R.string.unknown_error_occurred)
             } else {
                 toast(org.fossify.commons.R.string.unknown_error_occurred)
             }

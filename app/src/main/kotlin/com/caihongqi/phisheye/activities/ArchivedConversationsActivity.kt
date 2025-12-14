@@ -12,9 +12,9 @@ import org.fossify.commons.extensions.hideKeyboard
 import org.fossify.commons.extensions.viewBinding
 import org.fossify.commons.helpers.NavigationIcon
 import org.fossify.commons.helpers.ensureBackgroundThread
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.adapters.ArchivedConversationsAdapter
-import org.fossify.messages.databinding.ActivityArchivedConversationsBinding
+import com.caihongqi.phisheye.databinding.ActivityArchivedConversationsBinding
 import com.caihongqi.phisheye.extensions.config
 import com.caihongqi.phisheye.extensions.conversationsDB
 import com.caihongqi.phisheye.extensions.removeAllArchivedConversations

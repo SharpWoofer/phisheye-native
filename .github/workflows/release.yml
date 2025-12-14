@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - ".fossify/release-marker.txt"
+      - ".caihongqi/release-marker.txt"
 
 jobs:
   call-release-workflow:

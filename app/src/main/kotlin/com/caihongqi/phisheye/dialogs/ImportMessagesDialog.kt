@@ -7,9 +7,9 @@ import org.fossify.commons.extensions.setupDialogStuff
 import org.fossify.commons.extensions.toast
 import org.fossify.commons.helpers.MEDIUM_ALPHA
 import org.fossify.commons.helpers.ensureBackgroundThread
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.activities.SimpleActivity
-import org.fossify.messages.databinding.DialogImportMessagesBinding
+import com.caihongqi.phisheye.databinding.DialogImportMessagesBinding
 import com.caihongqi.phisheye.extensions.config
 import com.caihongqi.phisheye.helpers.MessagesImporter
 import com.caihongqi.phisheye.models.ImportResult

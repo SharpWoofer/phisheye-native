@@ -33,10 +33,10 @@ import org.fossify.commons.helpers.PERMISSION_READ_CONTACTS
 import org.fossify.commons.helpers.SimpleContactsHelper
 import org.fossify.commons.helpers.ensureBackgroundThread
 import org.fossify.commons.models.SimpleContact
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.adapters.ContactsAdapter
-import org.fossify.messages.databinding.ActivityNewConversationBinding
-import org.fossify.messages.databinding.ItemSuggestedContactBinding
+import com.caihongqi.phisheye.databinding.ActivityNewConversationBinding
+import com.caihongqi.phisheye.databinding.ItemSuggestedContactBinding
 import com.caihongqi.phisheye.extensions.getSuggestedContacts
 import com.caihongqi.phisheye.extensions.getThreadId
 import com.caihongqi.phisheye.helpers.SmsIntentParser

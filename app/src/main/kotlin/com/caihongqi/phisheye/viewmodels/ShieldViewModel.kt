@@ -12,9 +12,9 @@ import kotlinx.coroutines.launch
 import com.caihongqi.phisheye.models.ShieldFilter
 import com.caihongqi.phisheye.models.ShieldListItem
 import com.caihongqi.phisheye.models.ShieldUiState
-import com.caihongqi.phisheye.phisheye.DetectionHistoryEntity
-import com.caihongqi.phisheye.phisheye.DetectionHistoryRepository
-import com.caihongqi.phisheye.phisheye.NotificationDataHolder
+import com.caihongqi.phisheye.scam.DetectionHistoryEntity
+import com.caihongqi.phisheye.scam.DetectionHistoryRepository
+import com.caihongqi.phisheye.scam.NotificationDataHolder
 
 class ShieldViewModel(application: Application) : AndroidViewModel(application) {
 

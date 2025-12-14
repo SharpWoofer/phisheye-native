@@ -17,8 +17,8 @@ import org.fossify.commons.helpers.ExportResult
 import org.fossify.commons.helpers.NavigationIcon
 import org.fossify.commons.helpers.ensureBackgroundThread
 import org.fossify.commons.interfaces.RefreshRecyclerViewListener
-import org.fossify.messages.R
-import org.fossify.messages.databinding.ActivityManageBlockedKeywordsBinding
+import com.caihongqi.phisheye.R
+import com.caihongqi.phisheye.databinding.ActivityManageBlockedKeywordsBinding
 import com.caihongqi.phisheye.dialogs.AddBlockedKeywordDialog
 import com.caihongqi.phisheye.dialogs.ExportBlockedKeywordsDialog
 import com.caihongqi.phisheye.dialogs.ManageBlockedKeywordsAdapter

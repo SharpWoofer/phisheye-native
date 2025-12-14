@@ -23,15 +23,15 @@ import org.fossify.commons.helpers.PERMISSION_READ_CONTACTS
 import org.fossify.commons.helpers.PERMISSION_READ_SMS
 import org.fossify.commons.helpers.PERMISSION_SEND_SMS
 import org.fossify.commons.helpers.isQPlus
-import org.fossify.messages.BuildConfig
-import org.fossify.messages.R
-import org.fossify.messages.databinding.ActivityMainBinding
+import com.caihongqi.phisheye.BuildConfig
+import com.caihongqi.phisheye.R
+import com.caihongqi.phisheye.databinding.ActivityMainBinding
 import com.caihongqi.phisheye.fragments.MessagesFragment
 import com.caihongqi.phisheye.fragments.ScanFragment
 import com.caihongqi.phisheye.fragments.SettingsFragment
 import com.caihongqi.phisheye.fragments.ShieldFragment
-import com.caihongqi.phisheye.phisheye.ModelUpdater
-import com.caihongqi.phisheye.phisheye.SpamScannerForegroundService
+import com.caihongqi.phisheye.scam.ModelUpdater
+import com.caihongqi.phisheye.scam.SpamScannerForegroundService
 
 class MainActivity : SimpleActivity() {
     private val MAKE_DEFAULT_APP_REQUEST = 1
@@ -42,10 +42,6 @@ class MainActivity : SimpleActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         appLaunched(BuildConfig.APPLICATION_ID)
-
-        if (checkAppSideloading()) {
-            return
-        }
 
         Log.d("MainActivity", "=== Starting SpamScannerForegroundService ===")
         SpamScannerForegroundService.start(this)

@@ -12,7 +12,7 @@ import org.fossify.commons.extensions.launchActivityIntent
 import org.fossify.commons.helpers.KEY_PHONE
 import org.fossify.commons.helpers.ensureBackgroundThread
 import org.fossify.commons.views.MyRecyclerView
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.dialogs.RenameConversationDialog
 import com.caihongqi.phisheye.extensions.config
 import com.caihongqi.phisheye.messaging.isShortCodeWithLetters
@@ -37,7 +37,7 @@ class ConversationsAdapter(
 
         menu.apply {
             findItem(R.id.cab_block_number).title =
-                context.addLockedLabelIfNeeded(org.fossify.commons.R.string.block_number)
+                context.getString(org.fossify.commons.R.string.block_number)
             findItem(R.id.cab_add_number_to_contact).isVisible =
                 isSingleSelection && !isGroupConversation
             findItem(R.id.cab_dial_number).isVisible =
@@ -79,11 +79,7 @@ class ConversationsAdapter(
     }
 
     private fun tryBlocking() {
-        if (context.isOrWasThankYouInstalled()) {
-            askConfirmBlock()
-        } else {
-            FeatureLockedDialog(context as Activity) { }
-        }
+        askConfirmBlock()
     }
 
     private fun askConfirmBlock() {

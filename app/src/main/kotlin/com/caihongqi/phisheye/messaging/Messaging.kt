@@ -8,7 +8,7 @@ import com.klinker.android.send_message.Settings
 import org.fossify.commons.extensions.showErrorToast
 import org.fossify.commons.extensions.toast
 import org.fossify.commons.helpers.ensureBackgroundThread
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.extensions.config
 import com.caihongqi.phisheye.extensions.getThreadId
 import com.caihongqi.phisheye.extensions.messagingUtils

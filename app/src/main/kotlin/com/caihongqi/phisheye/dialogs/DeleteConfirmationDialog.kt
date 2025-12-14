@@ -5,7 +5,7 @@ import androidx.appcompat.app.AlertDialog
 import org.fossify.commons.extensions.beGoneIf
 import org.fossify.commons.extensions.getAlertDialogBuilder
 import org.fossify.commons.extensions.setupDialogStuff
-import org.fossify.messages.databinding.DialogDeleteConfirmationBinding
+import com.caihongqi.phisheye.databinding.DialogDeleteConfirmationBinding
 
 class DeleteConfirmationDialog(
     private val activity: Activity,

@@ -11,10 +11,10 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import org.fossify.commons.extensions.*
 import org.fossify.commons.helpers.SimpleContactsHelper
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.activities.SimpleActivity
-import org.fossify.messages.databinding.ItemVcardContactBinding
-import org.fossify.messages.databinding.ItemVcardContactPropertyBinding
+import com.caihongqi.phisheye.databinding.ItemVcardContactBinding
+import com.caihongqi.phisheye.databinding.ItemVcardContactPropertyBinding
 import com.caihongqi.phisheye.models.VCardPropertyWrapper
 import com.caihongqi.phisheye.models.VCardWrapper
 

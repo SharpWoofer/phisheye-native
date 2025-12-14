@@ -10,7 +10,7 @@ import android.provider.Telephony
 import android.widget.Toast
 import org.fossify.commons.extensions.showErrorToast
 import org.fossify.commons.extensions.toast
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.extensions.deleteMessage
 import com.caihongqi.phisheye.helpers.refreshConversations
 import com.caihongqi.phisheye.helpers.refreshMessages

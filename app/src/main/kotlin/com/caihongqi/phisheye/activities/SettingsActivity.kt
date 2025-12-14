@@ -31,8 +31,8 @@ import org.fossify.commons.helpers.ensureBackgroundThread
 import org.fossify.commons.helpers.isQPlus
 import org.fossify.commons.helpers.isTiramisuPlus
 import org.fossify.commons.models.RadioItem
-import org.fossify.messages.R
-import org.fossify.messages.databinding.ActivitySettingsBinding
+import com.caihongqi.phisheye.R
+import com.caihongqi.phisheye.databinding.ActivitySettingsBinding
 import com.caihongqi.phisheye.dialogs.ExportMessagesDialog
 import com.caihongqi.phisheye.extensions.config
 import com.caihongqi.phisheye.extensions.emptyMessagesRecycleBin
@@ -201,30 +201,22 @@ class SettingsActivity : SimpleActivity() {
 
     private fun setupManageBlockedNumbers() = binding.apply {
         settingsManageBlockedNumbers.text =
-            addLockedLabelIfNeeded(org.fossify.commons.R.string.manage_blocked_numbers)
+            getString(org.fossify.commons.R.string.manage_blocked_numbers)
         settingsManageBlockedNumbersHolder.beVisible()
         settingsManageBlockedNumbersHolder.setOnClickListener {
-            if (isOrWasThankYouInstalled()) {
-                Intent(this@SettingsActivity, ManageBlockedNumbersActivity::class.java).apply {
-                    startActivity(this)
-                }
-            } else {
-                FeatureLockedDialog(this@SettingsActivity) { }
+            Intent(this@SettingsActivity, ManageBlockedNumbersActivity::class.java).apply {
+                startActivity(this)
             }
         }
     }
 
     private fun setupManageBlockedKeywords() = binding.apply {
         settingsManageBlockedKeywords.text =
-            addLockedLabelIfNeeded(R.string.manage_blocked_keywords)
+            getString(R.string.manage_blocked_keywords)
 
         settingsManageBlockedKeywordsHolder.setOnClickListener {
-            if (isOrWasThankYouInstalled()) {
-                Intent(this@SettingsActivity, ManageBlockedKeywordsActivity::class.java).apply {
-                    startActivity(this)
-                }
-            } else {
-                FeatureLockedDialog(this@SettingsActivity) { }
+            Intent(this@SettingsActivity, ManageBlockedKeywordsActivity::class.java).apply {
+                startActivity(this)
             }
         }
     }

@@ -1,7 +1,16 @@
 package com.caihongqi.phisheye.activities
 
-import org.fossify.commons.activities.BaseSimpleActivity
-import org.fossify.messages.R
+import android.content.Intent
+import android.os.Bundle
+import androidx.core.view.WindowCompat
+import com.caihongqi.phisheye.activities.BaseSimpleActivity
+import com.caihongqi.phisheye.R
+import org.fossify.commons.activities.CustomizationActivity
+import org.fossify.commons.extensions.baseConfig
+import org.fossify.commons.extensions.getThemeId
+
+import org.fossify.commons.helpers.APP_ICON_IDS
+import org.fossify.commons.helpers.APP_LAUNCHER_NAME
 
 open class SimpleActivity : BaseSimpleActivity() {
     override fun getAppIconIDs() = arrayListOf(
@@ -28,5 +37,5 @@ open class SimpleActivity : BaseSimpleActivity() {
 
     override fun getAppLauncherName() = getString(R.string.app_launcher_name)
 
-    override fun getRepositoryName() = "Messages"
+    override fun getRepositoryName() = "PhishEye"
 }

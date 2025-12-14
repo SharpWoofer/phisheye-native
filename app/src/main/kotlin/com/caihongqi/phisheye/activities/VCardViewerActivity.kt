@@ -10,9 +10,9 @@ import org.fossify.commons.extensions.normalizePhoneNumber
 import org.fossify.commons.extensions.sendEmailIntent
 import org.fossify.commons.extensions.viewBinding
 import org.fossify.commons.helpers.NavigationIcon
-import org.fossify.messages.R
+import com.caihongqi.phisheye.R
 import com.caihongqi.phisheye.adapters.VCardViewerAdapter
-import org.fossify.messages.databinding.ActivityVcardViewerBinding
+import com.caihongqi.phisheye.databinding.ActivityVcardViewerBinding
 import com.caihongqi.phisheye.extensions.dialNumber
 import com.caihongqi.phisheye.helpers.EXTRA_VCARD_URI
 import com.caihongqi.phisheye.helpers.parseVCardFromUri

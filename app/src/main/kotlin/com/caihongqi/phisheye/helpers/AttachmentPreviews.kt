@@ -5,11 +5,11 @@ import android.net.Uri
 import org.fossify.commons.extensions.*
 import org.fossify.commons.helpers.SimpleContactsHelper
 import org.fossify.commons.helpers.ensureBackgroundThread
-import org.fossify.messages.R
-import org.fossify.messages.databinding.ItemAttachmentDocumentBinding
-import org.fossify.messages.databinding.ItemAttachmentDocumentPreviewBinding
-import org.fossify.messages.databinding.ItemAttachmentVcardBinding
-import org.fossify.messages.databinding.ItemAttachmentVcardPreviewBinding
+import com.caihongqi.phisheye.R
+import com.caihongqi.phisheye.databinding.ItemAttachmentDocumentBinding
+import com.caihongqi.phisheye.databinding.ItemAttachmentDocumentPreviewBinding
+import com.caihongqi.phisheye.databinding.ItemAttachmentVcardBinding
+import com.caihongqi.phisheye.databinding.ItemAttachmentVcardPreviewBinding
 import com.caihongqi.phisheye.extensions.*
 
 fun ItemAttachmentDocumentPreviewBinding.setupDocumentPreview(
