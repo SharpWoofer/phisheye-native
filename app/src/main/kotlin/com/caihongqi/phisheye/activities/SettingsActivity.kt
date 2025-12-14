@@ -99,7 +99,7 @@ class SettingsActivity : SimpleActivity() {
         super.onResume()
         setupTopAppBar(binding.settingsAppbar, NavigationIcon.Arrow)
 
-        setupCustomizeColors()
+        //setupCustomizeColors()
         setupCustomizeNotifications()
         setupUseEnglish()
         setupLanguage()
@@ -130,14 +130,15 @@ class SettingsActivity : SimpleActivity() {
         }
 
         arrayOf(
-            binding.settingsColorCustomizationSectionLabel,
+            //binding.settingsColorCustomizationSectionLabel,
             binding.settingsGeneralSettingsLabel,
             binding.settingsOutgoingMessagesLabel,
             binding.settingsNotificationsLabel,
             binding.settingsArchivedMessagesLabel,
             binding.settingsRecycleBinLabel,
             binding.settingsSecurityLabel,
-            binding.settingsMigratingLabel
+            binding.settingsMigratingLabel,
+            binding.settingsCreditsLabel
         ).forEach {
             it.setTextColor(getProperPrimaryColor())
         }
@@ -162,11 +163,11 @@ class SettingsActivity : SimpleActivity() {
         blockedNumbersAtPause = getBlockedNumbers().hashCode()
     }
 
-    private fun setupCustomizeColors() = binding.apply {
-        settingsColorCustomizationHolder.setOnClickListener {
-            startCustomizationActivity()
-        }
-    }
+//    private fun setupCustomizeColors() = binding.apply {
+//        settingsColorCustomizationHolder.setOnClickListener {
+//            startCustomizationActivity()
+//        }
+//    }
 
     private fun setupCustomizeNotifications() = binding.apply {
         settingsCustomizeNotificationsHolder.setOnClickListener {

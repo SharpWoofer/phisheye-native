@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_launcher_name">Messages_debug</string>
+    <string name="credits">Credits</string>
+    <string name="fossify_credit">Core SMS and MMS messaging functionalities are based on Fossify Messages</string>
 </resources>
