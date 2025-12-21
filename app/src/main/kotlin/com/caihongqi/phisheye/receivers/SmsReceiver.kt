@@ -113,9 +113,15 @@ class SmsReceiver : BroadcastReceiver() {
                                 com.caihongqi.phisheye.scam.NotificationDataHolder.onNewNotification(result)
                                 if (result.prediction == "SPAM") {
                                     handler.showSpamAlertNotification(result)
+                                    shouldCheck = true // Reuse this or add new flag
+                                    // We'll return early below
+                                    throw SecurityException("Spam detected")
                                 }
                             }
                         }
+                    } catch (e: SecurityException) {
+                         // Spam detected, do not insert
+                         return@ensureBackgroundThread
                     } catch (e: Exception) {
                         android.util.Log.e("SmsReceiver", "Spam check failed", e)
                     }

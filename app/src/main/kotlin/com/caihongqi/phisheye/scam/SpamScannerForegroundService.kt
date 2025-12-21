@@ -51,7 +51,7 @@ class SpamScannerForegroundService : Service() {
     private fun createNotification(): Notification {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Spam Scanner Active")
-            .setContentText("Monitoring notifications for scam")
+            .setContentText("Monitoring messages for scam")
             .setSmallIcon(android.R.drawable.ic_secure)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
