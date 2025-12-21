@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Dark theme background for launcher icon. Dark background (#1F1F1F) ensures -->
-    <!-- adequate contrast with white foreground (17.67:1 contrast ratio - WCAG AAA compliant) -->
-    <!-- and remains legible on both light and dark device backgrounds -->
-    <color name="ic_launcher_background">#1F1F1F</color></resources>
