@@ -279,6 +279,7 @@ class MessagesFragment : Fragment(), ConversationInteractionListener {
         // Apply colors to search holder
         binding.searchHolder.setBackgroundColor(properBackgroundColor)
 
+        binding.noConversationsPlaceholder.setTextColor(properTextColor)
         binding.noConversationsPlaceholder2.setTextColor(properPrimaryColor)
         binding.noConversationsPlaceholder2.underlineText()
         binding.conversationsFastscroller.updateColors(properPrimaryColor)

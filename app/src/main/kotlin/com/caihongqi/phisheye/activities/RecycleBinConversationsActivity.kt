@@ -7,6 +7,7 @@ import org.fossify.commons.dialogs.ConfirmationDialog
 import org.fossify.commons.extensions.areSystemAnimationsEnabled
 import org.fossify.commons.extensions.beGoneIf
 import org.fossify.commons.extensions.beVisibleIf
+import org.fossify.commons.extensions.getProperTextColor
 import org.fossify.commons.extensions.hideKeyboard
 import org.fossify.commons.extensions.viewBinding
 import org.fossify.commons.helpers.NavigationIcon
@@ -148,6 +149,7 @@ class RecycleBinConversationsActivity : SimpleActivity() {
     private fun showOrHidePlaceholder(show: Boolean) {
         binding.conversationsFastscroller.beGoneIf(show)
         binding.noConversationsPlaceholder.beVisibleIf(show)
+        binding.noConversationsPlaceholder.setTextColor(getProperTextColor())
         binding.noConversationsPlaceholder.text = getString(R.string.no_conversations_found)
     }
 
