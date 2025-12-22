@@ -3,7 +3,6 @@ package com.caihongqi.phisheye.scam
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import ai.djl.huggingface.tokenizers.HuggingFaceTokenizer
 import ai.onnxruntime.OnnxTensor
 import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtSession
@@ -22,11 +21,10 @@ class SpamDetector(private val context: Context) {
     @Volatile
     private var ortSession: OrtSession? = null
     @Volatile
-    private var tokenizer: HuggingFaceTokenizer? = null
+    private var tokenizer: ByteLevelBPETokenizer? = null
 
     // These paths refer to the filenames in both assets and internal storage
     private val modelAssetPath = ModelUpdater.MODEL_FILENAME
-    private val tokenizerAssetPath = "tokenizer.json" // From your assets
     private val vocabAssetPath = ModelUpdater.VOCAB_FILENAME // From your assets
     private val mergesAssetPath = "merges.txt" // From your assets
 
@@ -73,19 +71,19 @@ class SpamDetector(private val context: Context) {
     }
 
     @Synchronized
-    private fun loadTokenizer(): HuggingFaceTokenizer? {
-        val updatedTokenizerFile = File(context.filesDir, tokenizerAssetPath)
+    private fun loadTokenizer(): ByteLevelBPETokenizer? {
         val updatedVocabFile = File(context.filesDir, vocabAssetPath)
         val updatedMergesFile = File(context.filesDir, mergesAssetPath)
 
         return try {
-            val tokenizerJsonFile: File
+            val vocabFile: File
+            val mergesFile: File
 
             // If ALL updated files exist in internal storage (downloaded by ModelUpdater)...
-            if (updatedTokenizerFile.exists() && updatedVocabFile.exists() && updatedMergesFile.exists()) {
+            if (updatedVocabFile.exists() && updatedMergesFile.exists()) {
                 Log.d(TAG, "Loading updated tokenizer from internal storage: ${context.filesDir}")
-                // ...use the tokenizer.json from the internal app storage directory.
-                tokenizerJsonFile = updatedTokenizerFile
+                vocabFile = updatedVocabFile
+                mergesFile = updatedMergesFile
             } else {
                 // Otherwise, copy from assets to a dedicated cache dir and load from there.
                 Log.d(TAG, "Loading tokenizer from bundled assets via temporary cache.")
@@ -94,19 +92,15 @@ class SpamDetector(private val context: Context) {
                     cacheDir.mkdirs()
                 }
                 // Copy all required files from assets to the cache directory.
-                copyAssetToCache(tokenizerAssetPath, cacheDir)
                 copyAssetToCache(vocabAssetPath, cacheDir)
                 copyAssetToCache(mergesAssetPath, cacheDir)
 
-                // ...and use the tokenizer.json from the cache directory.
-                tokenizerJsonFile = File(cacheDir, tokenizerAssetPath)
+                vocabFile = File(cacheDir, vocabAssetPath)
+                mergesFile = File(cacheDir, mergesAssetPath)
             }
-            // The factory method expects the path to tokenizer.json itself.
-            HuggingFaceTokenizer.newInstance(tokenizerJsonFile.toPath())
+            
+            ByteLevelBPETokenizer.newInstance(vocabFile, mergesFile)
 
-        } catch (ex: UnsatisfiedLinkError) {
-            Log.e(TAG, "Tokenizer native library not found. Check DJL dependencies.", ex)
-            null
         } catch (ex: Exception) {
             Log.e(TAG, "Failed to load tokenizer from path.", ex)
             null
@@ -117,7 +111,6 @@ class SpamDetector(private val context: Context) {
         val destinationFile = File(destDir, assetName)
         // No need to re-copy if it's already there (for efficiency on subsequent runs)
         if (destinationFile.exists()) {
-            // Optional: You could add a size check here for more robustness
             return
         }
 
