@@ -24,6 +24,7 @@ import java.util.Date
 import android.util.TypedValue
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class SettingsFragment : Fragment() {
 
@@ -72,14 +73,8 @@ class SettingsFragment : Fragment() {
         // Force Local Model UI
         binding.settingsForceLocalSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                val titleView = TextView(requireContext())
-                titleView.setText(R.string.force_local_model_warning_title)
-                titleView.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
-                titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
-                titleView.setPadding(50, 50, 50, 0) // Adjust padding as needed
-
-                val dialog = AlertDialog.Builder(requireContext())
-                    .setCustomTitle(titleView)
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.force_local_model_warning_title)
                     .setMessage(R.string.force_local_model_warning_message)
                     .setPositiveButton(R.string.enable) { _, _ ->
                         savePreference(PREF_FORCE_LOCAL_MODEL, true)
@@ -94,10 +89,6 @@ class SettingsFragment : Fragment() {
                          savePreference(PREF_FORCE_LOCAL_MODEL, false)
                     }
                     .show()
-
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
-
             } else {
                 savePreference(PREF_FORCE_LOCAL_MODEL, false)
             }
@@ -279,8 +270,8 @@ class SettingsFragment : Fragment() {
         const val PREF_FILTER_TELEGRAM = "filter_telegram"
         const val PREF_AUTO_UPDATE_MODELS = "auto_update_models"
         const val PREF_FORCE_LOCAL_MODEL = "force_local_model"
-        const val PREF_BLOCK_SPOOFED = "block_spoofed_numbers"
-        const val PREF_BLOCK_INTERNATIONAL = "block_international_calls"
-        const val PREF_BLOCK_BLACKLISTED = "block_blacklisted_numbers"
+        const val PREF_BLOCK_SPOOFED = "block_spoofed"
+        const val PREF_BLOCK_INTERNATIONAL = "block_international"
+        const val PREF_BLOCK_BLACKLISTED = "block_blacklisted"
     }
 }

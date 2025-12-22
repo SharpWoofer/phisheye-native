@@ -3,7 +3,7 @@ package com.caihongqi.phisheye.dialogs
 import android.app.Activity
 import android.widget.EditText
 import android.widget.FrameLayout
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.fossify.commons.R
 
 fun ConfirmationDialog(
@@ -14,7 +14,7 @@ fun ConfirmationDialog(
     negative: Int = R.string.no,
     callback: () -> Unit
 ) {
-    val builder = AlertDialog.Builder(activity)
+    val builder = MaterialAlertDialogBuilder(activity)
     
     val msg = if (message.isEmpty()) activity.getString(messageId) else message
     builder.setMessage(msg)
@@ -33,7 +33,7 @@ fun PermissionRequiredDialog(
     textId: Int,
     positiveActionCallback: () -> Unit
 ) {
-    AlertDialog.Builder(activity)
+    MaterialAlertDialogBuilder(activity)
         .setMessage(textId)
         .setPositiveButton(R.string.ok) { _, _ -> positiveActionCallback() }
         .setNegativeButton(R.string.cancel, null)
@@ -46,7 +46,7 @@ fun ExportSettingsDialog(
     hidePath: Boolean,
     callback: (path: String, filename: String) -> Unit
 ) {
-    val builder = AlertDialog.Builder(activity)
+    val builder = MaterialAlertDialogBuilder(activity)
     builder.setTitle(R.string.export_settings)
     
     val input = EditText(activity)
@@ -73,7 +73,7 @@ fun FilePickerDialog(
     showFAB: Boolean,
     callback: (path: String) -> Unit
 ) {
-    val builder = AlertDialog.Builder(activity)
+    val builder = MaterialAlertDialogBuilder(activity)
     builder.setTitle(if (pickFile) R.string.select_file else R.string.select_folder)
     
     val input = EditText(activity)
@@ -100,7 +100,7 @@ fun RadioGroupDialog(
     titleId: Int = 0,
     callback: (Any) -> Unit
 ) {
-    val builder = AlertDialog.Builder(activity)
+    val builder = MaterialAlertDialogBuilder(activity)
     if (titleId != 0) {
         builder.setTitle(titleId)
     }
@@ -114,7 +114,7 @@ fun RadioGroupDialog(
 
 // Stub for FeatureLockedDialog
 fun FeatureLockedDialog(activity: Activity, callback: () -> Unit) {
-    AlertDialog.Builder(activity)
+    MaterialAlertDialogBuilder(activity)
         .setMessage(R.string.features_locked)
         .setPositiveButton(R.string.ok) { _, _ -> callback() }
         .setNegativeButton(R.string.cancel, null)
@@ -124,7 +124,7 @@ fun FeatureLockedDialog(activity: Activity, callback: () -> Unit) {
 // Stub for WritePermissionDialog
 fun WritePermissionDialog(activity: Activity, mode: Any, callback: () -> Unit) {
     // Just trigger the callback or show generic confirmation
-    AlertDialog.Builder(activity)
+    MaterialAlertDialogBuilder(activity)
         .setMessage(R.string.confirm_storage_access_text)
         .setPositiveButton(R.string.ok) { _, _ -> callback() }
         .setNegativeButton(R.string.cancel, null)
@@ -140,7 +140,7 @@ fun FileConflictDialog(
 ) {
     // Always skip or overwrite?
     // Let's just ask overwrite
-    AlertDialog.Builder(activity)
+    MaterialAlertDialogBuilder(activity)
         .setMessage("Overwrite file?")
         .setPositiveButton(R.string.yes) { _, _ -> callback(1, false) } // 1 = Overwrite? Need to check values
         .setNegativeButton(R.string.no) { _, _ -> callback(0, false) } // 0 = Skip

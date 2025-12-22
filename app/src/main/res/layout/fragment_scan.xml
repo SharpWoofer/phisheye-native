@@ -10,9 +10,10 @@
         android:id="@+id/scan_icon"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/ic_chart_vector" 
-        android:contentDescription="@string/app_name" 
-        android:layout_marginBottom="24dp"/>
+        android:src="@drawable/ic_image_vector"
+        android:contentDescription="@string/app_name"
+        android:layout_marginBottom="24dp"
+        android:tint="?android:attr/textColorPrimary" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -20,14 +21,16 @@
         android:text="Scan Image for Scam"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        android:textColor="?android:attr/textColorPrimary" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Upload a screenshot to detect spam."
+        android:text="Upload a chat screenshot to detect spam."
         android:textSize="16sp"
-        android:layout_marginBottom="32dp"/>
+        android:layout_marginBottom="32dp"
+        android:textColor="?android:attr/textColorSecondary" />
 
     <Button
         android:id="@+id/btn_upload_screenshot"

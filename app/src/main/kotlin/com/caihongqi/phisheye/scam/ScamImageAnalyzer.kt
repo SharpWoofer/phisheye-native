@@ -3,10 +3,11 @@ package com.caihongqi.phisheye.scam
 import android.content.Context
 import android.net.Uri
 import android.widget.Toast
-import android.app.AlertDialog
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.caihongqi.phisheye.R
 
 class ScamImageAnalyzer(private val context: Context) {
 
@@ -54,7 +55,7 @@ class ScamImageAnalyzer(private val context: Context) {
         else 
             "No typical scam patterns found.\n\nExtracted: \"${text.take(150)}...\""
 
-        AlertDialog.Builder(context)
+        MaterialAlertDialogBuilder(context)
             .setTitle(title)
             .setMessage(message)
             .setPositiveButton("Done") { dialog, _ -> 
